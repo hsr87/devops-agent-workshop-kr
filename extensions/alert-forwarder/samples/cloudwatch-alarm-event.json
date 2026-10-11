@@ -1,0 +1,13 @@
+{
+  "version": "0",
+  "detail-type": "CloudWatch Alarm State Change",
+  "source": "aws.cloudwatch",
+  "region": "us-east-1",
+  "detail": {
+    "alarmName": "API-Gateway-5xx-Errors",
+    "state": {
+      "value": "ALARM",
+      "reason": "Threshold Crossed: 1 out of the last 1 datapoints was greater than or equal to the threshold (1.0)"
+    }
+  }
+}

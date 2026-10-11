@@ -1,0 +1,14 @@
+# Original AWS workshop content: link to it, do not republish
+reference/
+# Customer-specific planning notes
+workshop-plan.md
+# Secrets / generated
+.mcp-endpoint.env
+*.env
+.env*
+site/
+__pycache__/
+.venv/
+venv/
+.DS_Store
+report.md

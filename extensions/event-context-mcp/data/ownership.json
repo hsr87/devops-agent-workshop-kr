@@ -1,0 +1,85 @@
+{
+  "ads-serving": {
+    "team": "ads-serving-team",
+    "domain": "광고 노출 서빙 (입찰 결과를 받아 광고 슬롯에 렌더링)",
+    "oncall_channel": "#ads-serving-oncall",
+    "aliases": [
+      "ad-server",
+      "ads-api"
+    ],
+    "upstream": [
+      "ads-bidding"
+    ],
+    "downstream": [
+      "ads-tracking"
+    ],
+    "aws_resources": [
+      "API Gateway workshop-api"
+    ],
+    "routing_rule": "노출 급감 + 서빙 5xx/지연 증가 시"
+  },
+  "ads-bidding": {
+    "team": "ads-bidding-team",
+    "domain": "실시간 입찰/예산 페이싱",
+    "oncall_channel": "#ads-bidding-oncall",
+    "aliases": [
+      "bidder"
+    ],
+    "upstream": [
+      "ads-budget"
+    ],
+    "downstream": [
+      "ads-serving"
+    ],
+    "aws_resources": [],
+    "routing_rule": "입찰 응답률 하락, 예산 소진 이상, 노출은 감소했지만 서빙 에러 없음"
+  },
+  "ads-tracking": {
+    "team": "ads-data-team",
+    "domain": "노출/클릭 이벤트 수집·집계",
+    "oncall_channel": "#ads-data-oncall",
+    "aliases": [
+      "event-collector"
+    ],
+    "upstream": [
+      "ads-serving"
+    ],
+    "downstream": [
+      "reporting"
+    ],
+    "aws_resources": [],
+    "routing_rule": "서빙 정상인데 집계 메트릭만 감소 (수집 파이프라인 지연/유실)"
+  },
+  "order-api": {
+    "team": "commerce-order-team",
+    "domain": "주문 처리 API (워크샵 order-api, ECS)",
+    "oncall_channel": "#order-oncall",
+    "aliases": [
+      "order-processing",
+      "workshop-order-processor"
+    ],
+    "upstream": [],
+    "downstream": [],
+    "aws_resources": [
+      "ECS service order-api on cloudformation-template-cluster",
+      "Lambda workshop-order-processor",
+      "CodePipeline cloudformation-template-pipeline"
+    ],
+    "routing_rule": "주문 성공률 하락, order-api 5xx/OOM, 배포 직후 회귀"
+  },
+  "platform-infra": {
+    "team": "platform-sre-team",
+    "domain": "공용 인프라 (네트워크, 클러스터 용량, 공용 DB)",
+    "oncall_channel": "#platform-oncall",
+    "aliases": [
+      "infra"
+    ],
+    "upstream": [],
+    "downstream": [
+      "ads-serving",
+      "order-api"
+    ],
+    "aws_resources": [],
+    "routing_rule": "여러 도메인이 동시에 영향, 인프라 설정/용량 문제"
+  }
+}

@@ -1,0 +1,47 @@
+# ③ 피드백 루프 & Lambda (0:58–1:05)
+
+## 미니 실습: RCA 반박하기 (필수, 5분)
+
+조사 결과가 틀렸거나 부족하다고 생각될 때 어떻게 하는지 직접 해봅니다.
+
+1. Operator access에서 끝난 **ECS 조사**를 엽니다.
+2. 채팅창에 반박이나 추가 정보를 넣어 재조사를 요청합니다. 예:
+    ```text
+    캐시 문제 말고도, 같은 시간대에 ECS 태스크의 CPU throttling이나
+    ALB 타겟 헬스체크 실패가 있었는지 확인해줘. 있었다면 RCA에 반영해줘.
+    ```
+3. 에이전트가 추가로 데이터를 수집하고 결론을 보강하거나 수정하는지 확인합니다.
+
+!!! question "Q. 조사 결과가 틀렸을 때 피드백 루프는 어떻게 되나요? 온톨로지 컨텍스트를 고쳐야 하나요?"
+    - Investigation이 끝난 뒤 **채팅으로 추가 정보를 넣어 재조사를 요청**할 수 있습니다.
+    - 잘못된 부분은 **Memory** 에 반영되어 다음 조사에 활용됩니다.
+    - 품질을 체계적으로 높이려면 **커스텀 에이전트, 스킬, 사내 MCP** 로 도메인 지식과 데이터를 제공합니다 → [Part 2](../part2/index.md)
+
+!!! question "Q. Self-evolving은 구체적으로 어떻게 동작하나요? regression 우려는 없나요?"
+    - 작업 이력과 피드백이 **메모리**에 저장되고, 다음 조사 때 참고됩니다.
+    - 에이전트는 기본적으로 **read-only** 로 조사합니다. 그래서 학습 때문에 운영 환경에 쓰기가 일어나는 일은 없습니다. 인프라 변경은 아래처럼 **사람이 승인**해야 실행됩니다.
+    - 다만 "조사 품질"이 나빠지는 regression은 따로 측정해야 합니다 → [확장 C · 정확도 평가](../part2/ext-eval.md)
+
+!!! question "Q. 모델을 고를 수 있나요? 성능과 비용은 누가 최적화하나요?"
+    DevOps Agent에서는 구체적인 모델을 고를 수 없고 **Smart / Balanced Tier** 만 선택합니다.
+    모델을 직접 고르고 싶은 단계는 Part 2의 **커스텀 에이전트**(Strands 등)에서 모델을 지정하는 식으로 나눠 맡기면 됩니다.
+
+## (선택) Lambda 인프라 설정 문제
+
+원본: [Lab 1 · Lambda Infrastructure Investigation](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/lambda-investigation)
+
+빨리 끝난 분을 위한 과제입니다. 진행자는 아래 세 화면만 짧게 보여줍니다.
+
+| 화면 | 의미 |
+|---|---|
+| Mitigation plan의 **5단계**: Prepare → Pre-validate → Apply → Post-validate → Rollback | 변경 전후 검증과 되돌리기 계획까지 포함된 실행 계획 |
+| **비용 영향**: 메모리 128MB → 1024MB, 호출당 비용 약 8배 | 조치의 비용 트레이드오프를 먼저 알려줌 |
+| **사람 승인(Human-in-the-loop)** | 인프라 변경은 승인 전에는 실행되지 않음 |
+
+## Part 1 정리
+
+| 문제 유형 | 예시 | DevOps Agent의 산출물 | 다음 담당 |
+|---|---|---|---|
+| 코드 결함 | ECS 메모리 누수 | RCA + "운영 조치 없음" + **Agent-ready spec** | 서비스 owner / 코딩 에이전트 |
+| 인프라 설정 | Lambda 타임아웃·메모리 부족 | RCA + **승인형 Mitigation plan** (비용·롤백 포함) | 플랫폼/SRE (승인 후 적용) |
+| 원인 불명 / 외부 요인 | API 5xx (변경 이력 없음) | 변경 가설을 배제한 RCA + 권고 | 판별 컨텍스트 필요 → Part 2 |

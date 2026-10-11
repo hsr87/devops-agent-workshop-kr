@@ -1,0 +1,50 @@
+[
+  {
+    "name": "국가대표 축구 경기 생중계 (데모: 항상 진행 중)",
+    "type": "sports_live",
+    "market": "KR",
+    "relative_start_minutes": -30,
+    "duration_minutes": 150,
+    "expected_impact_pct": {
+      "ad_impressions": -25,
+      "ad_clicks": -30
+    },
+    "source": "mock sports calendar",
+    "note": "경기 시간대에는 앱/웹 체류가 중계 플랫폼으로 이동해 노출·클릭이 자연 감소"
+  },
+  {
+    "name": "가을 정기 세일 프로모션",
+    "type": "promotion",
+    "market": "KR",
+    "start": "2026-10-20T00:00:00Z",
+    "end": "2026-10-27T00:00:00Z",
+    "expected_impact_pct": {
+      "ad_impressions": 35,
+      "ad_clicks": 40
+    },
+    "source": "mock marketing calendar"
+  },
+  {
+    "name": "추석 연휴",
+    "type": "holiday",
+    "market": "KR",
+    "start": "2026-09-23T15:00:00Z",
+    "end": "2026-09-27T15:00:00Z",
+    "expected_impact_pct": {
+      "ad_impressions": -15,
+      "ad_clicks": -10
+    },
+    "source": "mock holiday calendar"
+  },
+  {
+    "name": "Japan national holiday",
+    "type": "holiday",
+    "market": "JP",
+    "start": "2026-11-02T15:00:00Z",
+    "end": "2026-11-03T15:00:00Z",
+    "expected_impact_pct": {
+      "ad_impressions": -10
+    },
+    "source": "mock holiday calendar"
+  }
+]

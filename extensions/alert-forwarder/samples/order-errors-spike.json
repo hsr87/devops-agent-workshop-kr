@@ -1,0 +1,18 @@
+{
+  "source": "biz-metric-alert",
+  "alert_system": "business-metric-alerting",
+  "metric": "order_success_rate",
+  "service": "order-api",
+  "market": "KR",
+  "direction": "drop",
+  "observed": "auto",
+  "expected": "auto",
+  "deviation_pct": -28,
+  "window_start": "auto",
+  "window_end": "auto",
+  "related_resources": [
+    "ECS service order-api on cloudformation-template-cluster",
+    "CodePipeline cloudformation-template-pipeline"
+  ],
+  "severity": "CRITICAL"
+}

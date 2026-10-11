@@ -1,0 +1,19 @@
+{
+  "source": "biz-metric-alert",
+  "alert_system": "business-metric-alerting",
+  "metric": "ad_impressions",
+  "service": "ads-serving",
+  "market": "KR",
+  "direction": "drop",
+  "observed": "auto",
+  "expected": "auto",
+  "deviation_pct": -62,
+  "window_start": "auto",
+  "window_end": "auto",
+  "related_resources": [
+    "ECS cluster cloudformation-template-cluster",
+    "API Gateway workshop-api"
+  ],
+  "severity": "HIGH",
+  "dashboard": "https://grafana.example.com/d/ads-overview"
+}

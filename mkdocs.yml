@@ -1,0 +1,59 @@
+site_name: AWS DevOps Agent 실습 워크샵
+site_description: AWS DevOps Agent 기본 기능, 기존 Agent 연결 시나리오, Discovery 워크샵 가이드
+repo_url: https://github.com/hsr87/devops-agent-workshop-kr
+edit_uri: ""
+theme:
+  name: material
+  language: ko
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.footer
+    - content.code.copy
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      toggle: {icon: material/brightness-7, name: 다크 모드}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      toggle: {icon: material/brightness-4, name: 라이트 모드}
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed: {alternate_style: true}
+  - tables
+  - attr_list
+  - toc: {permalink: true}
+nav:
+  - 시작하기:
+      - 개요: index.md
+      - 환경 준비: setup.md
+  - "Part 1 · 기본 기능":
+      - part1/index.md
+      - "① ECS 장애 조사": part1/ecs.md
+      - "② 자동 트리거 (Proactive)": part1/proactive.md
+      - "③ 피드백 루프 & Lambda": part1/feedback.md
+  - "Part 2 · 기존 Agent 연결":
+      - part2/index.md
+      - "멀티에이전트 패턴": part2/architecture.md
+      - "Lab 3 실습": part2/lab3.md
+      - "Lab 4·5 데모": part2/demo.md
+      - "확장 A · 비즈니스 알림 트리거": part2/ext-alert.md
+      - "확장 B · 이벤트 컨텍스트 MCP": part2/ext-mcp.md
+      - "확장 C · 정확도 평가": part2/ext-eval.md
+  - "Part 3 · Discovery":
+      - part3/index.md
+      - "템플릿": part3/templates.md
+  - FAQ: faq.md
+  - 진행자 가이드:
+      - facilitator/index.md
+      - "리스크 & 백업": facilitator/risks.md
+      - "사전 검증 결과": facilitator/test-report.md
