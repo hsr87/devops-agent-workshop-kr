@@ -71,6 +71,11 @@ source ~/.ext-workshop.env
 
 조사 timeline에서 `explain_deviation` 이 호출되는지, 그리고 판별 결과가 둘로 갈리는지 확인합니다. -26%는 *EXPECTED_EVENT*, -62%는 *INCIDENT* 여야 합니다.
 
+!!! warning "두 알림을 연달아 보내면 하나의 장애로 묶일 수 있습니다"
+    같은 서비스와 메트릭의 알림을 짧은 간격으로 보내면 두 번째 알림은 첫 조사에 `LINKED` 됩니다([확장 A 참고](ext-alert.md)). 판별 결과를 각각 비교하려면 한 샘플씩 보내고 조사가 끝난 뒤 다음 샘플을 보내세요. 또는 Agent Space를 나누세요.
+
+    MCP 연결 **전과 후**를 비교하는 것이 가장 효과적인 시연입니다. MCP가 없을 때 에이전트는 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 기록하고 판단을 유보합니다([사전 검증 결과](../facilitator/test-report.md)).
+
 ## 운영에 적용할 때
 
 - 조사 품질은 **tool 설명**(description)에 크게 좌우됩니다. "언제 이 tool을 먼저 불러야 하는지"를 설명에 명시하세요. 예: `Call this first when an alert is about a business metric.`

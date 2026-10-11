@@ -53,6 +53,16 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
 | `order-errors-spike.json` | 주문 성공률 -28% | **INCIDENT** → `commerce-order-team` 으로 라우팅 |
 | `cloudwatch-alarm-event.json` | EventBridge 알람 이벤트 형식 | Lambda로 배포했을 때의 입력 예시 |
 
+!!! info "같은 장애의 연속 알림은 자동으로 묶입니다 (사전 검증에서 확인)"
+    -26% 알림을 보낸 지 11분 뒤에 같은 서비스와 메트릭으로 -62% 알림을 보냈습니다. 그러자 새 조사가 시작되지 않고 `LINKED` 상태가 되었습니다. 원래 조사는 새 정보를 반영해 **다시 조사**에 들어갔습니다. 에이전트가 남긴 판단 근거는 다음과 같습니다.
+
+    > *"Same service (ads-serving), same metric (ad_impressions), same market (KR) … within 11 minutes of the primary's start time, indicating a worsening of the same ongoing incident (drop deepened from -26% to -62%)."*
+
+    알림이 폭주할 때 **중복 조사를 막는 기능**입니다. 확인 방법:
+    `aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" --query 'tasks[].[title,status]' --output table`
+    이후 `get-backlog-task` 로 `primaryTaskId` 와 `statusReason` 을 확인합니다.
+    두 샘플을 **별개의 조사로 비교**하고 싶다면 시간 간격을 충분히 두거나, 서로 다른 Agent Space에서 보내세요.
+
 !!! note "판별 결과는 확장 B와 함께 써야 합니다"
     MCP 서버([확장 B](ext-mcp.md))가 연결되어 있지 않으면 에이전트는 경기 일정을 알 수 없습니다. 이때는 **INCONCLUSIVE** 가 나오거나, 텔레메트리만 보고 판단합니다. 같은 알림을 MCP 연결 전과 후에 각각 보내 결과를 비교해 보세요.
 
