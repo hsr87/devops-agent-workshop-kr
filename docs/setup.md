@@ -62,5 +62,7 @@ ext/
 │   ├── alert-forwarder/       # 확장 A: 비즈니스 메트릭 알림 → DevOps Agent 웹훅
 │   ├── event-context-mcp/     # 확장 B: 외부 이벤트·baseline·서비스 owner MCP 서버
 │   └── rca-eval/              # 확장 C: 판별·라우팅·RCA 정확도 평가
-└── scripts/bootstrap.sh
+└── scripts/
+    ├── bootstrap.sh
+    └── cleanup-extensions.sh  # 확장 실습 리소스 정리 (원본 스택·Agent Space는 그대로)
 ```
