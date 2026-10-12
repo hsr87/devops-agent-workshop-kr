@@ -18,6 +18,10 @@
 | 10 | **확장 C** `--judge` (Bedrock Claude Opus 5.5) | ✅ | MATCH 2 / PARTIAL 1 / MISS 1, 근거 포함 |
 | 11 | 참가자 흐름: 새로 clone → `bootstrap.sh` → 확장 B·C | ✅ | venv 생성과 패키지 설치 포함 |
 | 12 | 가이드 사이트 `mkdocs build --strict` | ✅ | 경고 없음 |
+| 13 | **메인 에이전트 실습** `router.py start → finish --wait` (2회) | ✅ | -26%는 조사 없이 종료. 나머지 2건은 API로 조사 생성 → 완료(약 10분) → 라우팅 → 도메인 에이전트 판단 → `results.jsonl` |
+| 14 | 판별과 owner 조회를 배포된 MCP 서버로 호출 (`MCP_URL` 설정) | ✅ | 로컬 호출과 결과 동일 |
+| 15 | `router.py` 결과 → `evaluate.py --judge` | ✅ | 형식 호환. 채점 근거 포함 |
+| 16 | DevOps Agent에 기존 에이전트를 A2A로 등록 (`register-service --service remoteagent`) | ⚠️ **계정 정책으로 거부** | MCP와 같은 오류 |
 
 ## 실제 조사 결과에서 확인한 것 (MCP 미연결 상태)
 
@@ -48,9 +52,23 @@
 
 → 알림 폭주 상황에서 **중복 조사를 막고 악화 신호를 기존 조사에 합치는** 동작입니다. 워크샵에서 "알림 노이즈" 질문이 나오면 이 장면을 보여주세요. 반대로, 두 샘플의 판별 결과를 각각 비교하는 시연이라면 간격을 두고 보내야 합니다.
 
+## 메인 에이전트 실습 (triage-router) {#router}
+
+| 알림 | 판별 (코드) | DevOps Agent | 도메인 에이전트 | 최종 |
+|---|---|---|---|---|
+| 노출 -26% (경기 중) | EXPECTED_EVENT (잔차 -1.3%) | **호출 안 함** | – | EXPECTED_EVENT ✅ |
+| 노출 -62% (경기 중) | INCIDENT (잔차 -49.3%) | 완료. 알림이 가리키는 리소스가 계정에 없음 | NEED_MORE_INFO | INCONCLUSIVE (RCA 채점 MATCH) |
+| 주문 성공률 -28% | INCIDENT | 완료. order-api가 계정에 없음 | NEED_MORE_INFO | INCONCLUSIVE (RCA 채점 MISS) |
+
+- **검증 계정의 한계:** 워크샵 스택(`devops-mttr-workshop`)이 없는 계정에서 실행했습니다. 그래서 order-api 건은 실제 원인(메모리 누수)을 찾을 수 없었습니다. Workshop Studio 계정에서는 Lab 3 리셋으로 버그 코드가 배포되어 있으므로 원인을 찾을 것으로 예상합니다. **리허설 때 이 결과를 꼭 확인하세요.**
+- **도메인 에이전트는 억지로 받지 않았습니다.** 두 건 모두 "근거가 어느 도메인도 가리키지 않는다"며 `NEED_MORE_INFO` 를 냈고, RCA에 없는 근거를 만들어 내지 않았습니다.
+- **판별 결과 전달 효과(1차와 2차 비교):** 1차는 알림만 넘겼고, DevOps Agent가 *"event-context MCP가 없어 분류할 수 없다"* 를 **결정적 장애물(DECISIVE BLOCKER)** 로 기록했습니다. 2차는 메인 에이전트의 판별 결과를 description에 담아 넘겼고, 그 장애물이 사라졌습니다. 조사는 리소스 추적에 집중했습니다.
+- **소요 시간:** 조사 생성 약 1초, DevOps Agent 조사 약 10분, 결과 수집 약 2초, 도메인 에이전트 약 10–13초.
+- **조사 범위:** DevOps Agent는 계정에 있는 리소스를 넓게 탐색했습니다(ECS 클러스터, EKS, ALB, 다른 리전 포함). 진행자 데모 계정에는 관계없는 리소스를 두지 마세요(아래 3번).
+
 ## 진행자 조치 사항
 
-1. **MCP 등록 제한(8번):** Workshop Studio 이벤트 계정에서 `register.sh` 를 리허설로 실행해 보세요.
+1. **MCP·A2A 등록 제한(8번, 16번):** Workshop Studio 이벤트 계정에서 `register.sh` 를 리허설로 실행해 보세요.
     - 막히면 확장 B는 **등록이 허용되는 별도 계정에서 진행자 데모**로 대체합니다.
     - 참가자는 로컬 서버와 `test_mcp.sh` 까지만 실습합니다.
 2. **조사 소요 시간:** 웹훅 수신 후 시작까지 약 1분, 완료까지 약 10분이 걸렸습니다. 데모 일정에 반영하세요.

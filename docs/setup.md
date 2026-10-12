@@ -40,7 +40,7 @@ source ~/.ext-workshop.env
 `bootstrap.sh` 는 아래를 점검하고 `~/.ext-workshop.env` 에 값을 저장합니다.
 
 - AWS 계정과 워크샵 스택 상태
-- Agent Space ID (Part 2 Lab 3, 확장 실습에서 사용)
+- Agent Space ID (Part 2 Lab 3, 메인 에이전트 실습, 확장 실습에서 사용)
 - 확장 실습용 Python 패키지 (`ext/.venv`)
 
 !!! tip "새 터미널을 열 때마다"
@@ -61,6 +61,7 @@ ext/
 ├── extensions/
 │   ├── alert-forwarder/       # 확장 A: 비즈니스 메트릭 알림 → DevOps Agent 웹훅
 │   ├── event-context-mcp/     # 확장 B: 외부 이벤트·baseline·서비스 owner MCP 서버
+│   ├── triage-router/         # Part 2 메인 실습: 기존 메인 에이전트에 DevOps Agent 붙이기
 │   └── rca-eval/              # 확장 C: 판별·라우팅·RCA 정확도 평가
 └── scripts/
     ├── bootstrap.sh

@@ -34,10 +34,10 @@ fi
 
 echo "== Python packages for the extension labs (venv: $REPO_DIR/.venv)"
 if python3 -m venv "$REPO_DIR/.venv" >/dev/null 2>&1 \
-   && "$REPO_DIR/.venv/bin/pip" install -q -r "$REPO_DIR/extensions/rca-eval/requirements.txt" >/dev/null 2>&1; then
-  ok "anthropic, pydantic installed - run the judge with $REPO_DIR/.venv/bin/python"
+   && "$REPO_DIR/.venv/bin/pip" install -q -r "$REPO_DIR/extensions/rca-eval/requirements.txt" -r "$REPO_DIR/extensions/triage-router/requirements.txt" >/dev/null 2>&1; then
+  ok "boto3, anthropic, pydantic installed - run the judge with $REPO_DIR/.venv/bin/python"
 else
-  warn "venv/pip failed - only 'rca-eval --judge' needs these packages"
+  warn "venv/pip failed - triage-router and rca-eval --judge need these packages"
 fi
 
 cat > "$ENV_FILE" <<ENVEOF

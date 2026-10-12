@@ -20,6 +20,7 @@ source ~/.ext-workshop.env
 |---|---|
 | [`extensions/alert-forwarder`](extensions/alert-forwarder) | 비즈니스 메트릭 알림/CloudWatch 알람을 DevOps Agent generic webhook(HMAC/API key)으로 전달 |
 | [`extensions/event-context-mcp`](extensions/event-context-mcp) | 외부 이벤트·계절성 baseline·서비스 owner를 제공하는 MCP 서버 (Streamable HTTP, 의존성 없음) |
+| [`extensions/triage-router`](extensions/triage-router) | 메인 에이전트 예제: 결정적 판별 → DevOps Agent API로 RCA → 라우팅 → 도메인 에이전트 검증 |
 | [`extensions/rca-eval`](extensions/rca-eval) | 판별·라우팅·RCA 정확도 평가 (+ Bedrock Claude 채점기) |
 
 ## 로컬에서 사이트 미리보기

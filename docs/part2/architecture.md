@@ -1,4 +1,4 @@
-# 멀티에이전트 패턴과 우리 구조 (1:10–1:25)
+# 멀티에이전트 패턴과 우리 구조 (1:10–1:20)
 
 원본: [Lab 3 · Multi-Agent Architecture](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/multi-agent-architecture)
 
@@ -31,7 +31,7 @@
     2. **조사(RCA)는 DevOps Agent에 맡깁니다.** 텔레메트리, 배포, Topology를 상관 분석하는 일입니다.
     3. **도메인 검증은 서브에이전트가 합니다.** "정말 우리 문제인가"를 도메인 데이터로 확인하고 근거를 덧붙입니다.
 
-    이렇게 나누면 단계마다 정답과 비교할 수 있어서 [정확도 평가](ext-eval.md)가 가능해집니다.
+    이렇게 나누면 단계마다 정답과 비교할 수 있어서 [정확도 평가](ext-eval.md)가 가능해집니다. 이 구조를 [다음 실습](ext-router.md)에서 직접 돌려봅니다.
 
 ## 연결 방향 두 가지 {#a2a}
 
@@ -40,6 +40,7 @@
 | 방식 | DevOps Agent **API** 를 tool로 호출 (원본 Lab 3의 `aidevops_client.py`) | 기존 에이전트를 **원격 A2A 에이전트** 로 등록 (`register-service --service remoteagent`) |
 | 주도권 | 기존 오케스트레이터가 흐름을 통제 | DevOps Agent가 조사하다가 필요할 때 도메인 에이전트에게 질의 |
 | 적합한 경우 | 이미 오케스트레이션과 라우팅 로직이 있을 때 | 도메인 지식이 에이전트 형태로 이미 있을 때 |
+| 오늘 | [실습](ext-router.md) | 설명만 (사전 검증 계정에서 등록이 거부됨) |
 | 인증 | IAM (SigV4) | API key / Bearer / OAuth client credentials |
 
 ```bash

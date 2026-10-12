@@ -1,4 +1,4 @@
-# Lab 3 실습: DevOps Agent를 tool로 쓰는 멀티에이전트 (1:25–1:45)
+# Lab 3: DevOps Agent를 tool로 쓰는 멀티에이전트 (1:20–1:25 실행, 결과는 1:45 전후)
 
 원본: [Lab 3 · Build Autonomous Agents](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/build-autonomous-agents) → [Run & Observe the Workflow](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/run-and-observe)
 
@@ -29,10 +29,13 @@ python3 server.py
 
 출력된 **EC2 URL**을 새 탭에서 열고 **Run SRE Agent** 를 누릅니다(기본값 그대로).
 
+!!! tip "실행을 걸어 두고 바로 다음 실습으로"
+    끝까지 10–15분 걸립니다. 실행 중에는 [메인 에이전트 실습](ext-router.md)을 진행하고, 그 실습의 조사를 기다리는 동안 이 탭으로 돌아와 아래 2·3번을 확인하세요. `server.py` 는 터미널 하나를 차지하므로 **새 터미널**을 열어 다음 실습을 하세요.
+
 !!! warning "대시보드 링크 주의"
     VS Code가 띄우는 "Open in Browser" 알림 링크는 쓰지 마세요. CloudFront 프록시를 거쳐서 스트리밍이 동작하지 않습니다. 스크립트가 출력한 **EC2 URL** 을 쓰세요.
 
-## 2. 기다리는 동안 (10–15분): 코드 읽기
+## 2. 코드 읽기 (메인 에이전트 실습의 조사를 기다리는 동안)
 
 | 파일 | 볼 것 |
 |---|---|
