@@ -17,3 +17,5 @@ report.md
 extensions/triage-router/runs/
 extensions/triage-router/results.jsonl
 prompt.txt
+workshop-runbook.md
+.docs-venv/
