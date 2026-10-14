@@ -13,7 +13,7 @@ Running tasks `2/2`, 배포 상태 정상 — **지금은 멀쩡해 보입니다
 ### 2. 조사 시작 (2분)
 
 1. [DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → `api-error-incident-space` → **View details**
-2. 오른쪽 위 **Operator access** → 새 탭에서 웹앱이 열립니다.
+2. 오른쪽 위 **Operator access** → **IAM을 통해 시작** (영어 콘솔: *Launch with IAM*) → 새 탭에서 웹앱이 열립니다. Workshop Studio 계정은 IAM Identity Center가 없으므로 IAM 방식을 고릅니다.
 3. 왼쪽 메뉴 **Incidents** → **Start an investigation** 입력창에 아래를 붙여 넣습니다. `<계정ID>` 는 콘솔 오른쪽 위 계정 메뉴에 보이는 12자리 숫자로 바꿉니다(터미널에서는 `aws sts get-caller-identity --query Account --output text`).
 
     ```text
