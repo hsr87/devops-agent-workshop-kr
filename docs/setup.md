@@ -11,7 +11,7 @@
 3. 12자리 **Event access code** 를 입력하고 약관에 동의한 뒤 **Join event** 를 누릅니다.
 4. 왼쪽 사이드바에서 **Open AWS console** 을 새 탭으로 엽니다. **VS Code IDE** 는 Part 2의 Lab 3에서만 씁니다.
 
-임시 AWS 계정, VS Code IDE, 실습 인프라(`devops-mttr-workshop` 스택)가 모두 준비되어 있습니다.
+임시 AWS 계정, VS Code IDE, 실습 인프라(CloudFormation 스택 `cloudformation-template`)가 모두 준비되어 있습니다.
 
 !!! info "명령은 어디서 실행하나요? (두 가지 중 하나만 고르세요)"
     | | 콘솔 + CloudShell (기본) | VS Code IDE |

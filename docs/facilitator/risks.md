@@ -13,7 +13,8 @@
 | CloudShell 세션 끊김 (20–30분 무입력) | 중간 | 다시 열고 `source ~/.ext-workshop.env`. 홈 디렉터리와 venv는 유지됨. 조사 결과는 `router.py finish` 를 다시 실행하면 이어서 받음 |
 | CloudShell의 AWS CLI가 `devops-agent` 명령을 모름 | 낮음 | 확장 실습 코드는 venv의 boto3를 쓰므로 영향 없음. CLI로 확인하는 단계는 콘솔 Operator access로 대신 확인 |
 | Proactive 알람 조사가 `LINKED` 로 보임 | 높음 | 정상. ①의 ECS 조사와 같은 클러스터·시간대라 같은 장애로 묶임. 알람 조사의 연결 사유와 메타데이터를 보고, ①의 ECS 조사에서 재조사 결과를 확인. "알림 노이즈" 답변 소재로 활용 |
-| CLI로 Agent Space를 만들면 계정 연결이 `Unauthorized` | 낮음 | 콘솔의 Begin setup을 쓰면 해당 없음. CLI로 만들 때는 역할 생성 후 1–3분(IAM 전파) 기다렸다가 `associate-service` 재시도 |
+| 확장 A의 -26% 알림이 `LINKED` 되어 "EXPECTED_EVENT" 결론이 안 보임 | 높음 (메인 에이전트 실습 직후) | 정상. 실습의 -62% 조사에 묶이고, 그 조사가 *"recovering (−62% → −26%)"* 로 재조사됨. 결론 화면은 진행자 데모 계정(광고 조사 없는 상태)에서 미리 확보 |
+| CLI로 Agent Space를 만들면 계정 연결이 `Unauthorized` | 낮음 | 콘솔의 Begin setup을 쓰면 해당 없음. CLI로 만들 때는 역할 생성 후 1–10분(IAM 전파) 기다렸다가 `associate-service` 재시도. 같은 이름의 역할을 지웠다 다시 만들면 더 오래 걸리므로 새 이름 사용 |
 | ECS 조사에서 Exit Code 137(OOM)이 안 보임 | 중간 | 환경 생성 직후에는 아직 OOM 전일 수 있음. 에이전트가 코드와 `[MEMORY LEAK]` 로그로 누수를 확정하고, 확인 못 한 부분은 investigation gap으로 따로 적는 것이 정상 동작 |
 | Webhook Secret 분실 | 중간 | Agent Space → Capabilities → 웹훅 **Rotate** 로 재발급 (URL은 그대로) |
 | 웹훅 200인데 조사가 안 생김 | 낮음 | 같은 `incidentId`/`timestamp` 는 중복으로 무시됨. forwarder는 매번 고유 ID 생성. 그래도 안 되면 payload 형식 확인 |

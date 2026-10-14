@@ -6,7 +6,7 @@ set -uo pipefail
 REGION="${AWS_REGION:-us-east-1}"
 
 for fn in ext-alert-forwarder ext-event-context-mcp; do
-  aws lambda delete-function --function-name "$fn" --region "$REGION" 2>/dev/null && echo "deleted lambda $fn"
+  aws lambda delete-function --function-name "$fn" --region "$REGION" >/dev/null 2>&1 && echo "deleted lambda $fn"
 done
 
 API_ID=$(aws apigatewayv2 get-apis --region "$REGION" --query "Items[?Name=='ext-event-context-mcp'].ApiId | [0]" --output text)

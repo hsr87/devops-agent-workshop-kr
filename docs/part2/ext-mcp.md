@@ -62,24 +62,31 @@ source ~/.ext-workshop.env
 !!! success "Workshop Studio 계정에서는 등록됩니다 (사전 검증에서 확인)"
     일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 등록이 거부됩니다. 하지만 **Workshop Studio 이벤트 계정에서는 등록과 Agent Space 연결이 모두 성공**했습니다. `register.sh` 는 다시 실행해도 안전합니다. 이미 등록돼 있으면 그 서버를 재사용합니다. → [사전 검증 결과](../facilitator/test-report.md)
 
-### 4) 효과 확인
+### 4) 효과 확인 {#effect}
 
 MCP를 연결한 뒤 [확장 A](ext-alert.md)로 **-26% 알림을 웹훅으로** 보냅니다. 이번에는 메인 에이전트의 판별 없이 **DevOps Agent가 스스로** 판단합니다.
 
 ```bash
 cd $EXT_REPO/extensions/alert-forwarder
 python3 send_test_alert.py samples/impressions-drop-during-match.json
+aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" --query 'tasks[].[title,status]' --output table
 ```
 
-사전 검증 결과(Workshop Studio 계정, 약 15분):
+결과는 **같은 Agent Space에 최근 광고 조사가 있느냐**에 따라 두 가지로 나옵니다.
 
-> *"The event-context analysis is decisive for the headline metric…"*
-> **Verdict: EXPECTED_EVENT — not an incident.**
+| 상황 | -26% 알림의 상태 | 결과를 보는 곳 |
+|---|---|---|
+| 최근 광고 조사 없음 (진행자 데모 계정) | 새 조사 | 그 조사의 결론: *"Verdict: **EXPECTED_EVENT — not an incident**"* |
+| [메인 에이전트 실습](ext-router.md)을 방금 끝냄 (참가자 계정) | **`LINKED`** → -62% 조사가 재조사 | -62% 조사의 새 요약: *"ad_impressions drop recovering (−62% → −26%)"* |
 
-조사 기록에서 `get_metric_baseline`, `explain_deviation`, `get_service_owner` 호출을 확인할 수 있습니다. MCP가 없을 때는 같은 알림에 대해 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 남기고 판단을 유보했습니다. **연결 전과 후의 비교**가 가장 효과적인 시연입니다.
+두 경우 모두 조사 기록에서 `explain_deviation`, `get_metric_baseline`, `get_service_owner` 호출을 확인할 수 있습니다. 이것이 MCP가 연결됐다는 증거입니다. MCP가 없을 때는 같은 알림에 대해 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 남기고 판단을 유보했습니다.
 
-!!! warning "알림을 연달아 보내면 하나의 장애로 묶입니다"
-    같은 시간대의 알림을 몇 초~몇 분 간격으로 보내면 뒤의 알림은 앞 조사에 `LINKED` 됩니다(사전 검증: -26% 알림 3초 뒤의 주문 알림도 묶임). 판별 결과를 각각 보려면 **앞 조사가 끝난 뒤** 다음 알림을 보내세요.
+!!! warning "참가자 계정에서는 `LINKED` 가 정상입니다 (사전 검증 2회차에서 확인)"
+    메인 에이전트 실습의 -62% 조사가 **이미 완료된 뒤**(조사 시작 17분 뒤)에 -26% 알림을 보냈는데도 `LINKED` 되었습니다. 연결 사유는 다음과 같았습니다.
+
+    > *"Same service (ads-serving), same metric (ad_impressions), same market (KR) … a continuation of the same ongoing ad_impressions degradation, with the deviation now at -26% vs the earlier -62%."*
+
+    이 장면은 그대로 토론 소재가 됩니다. 알림이 연달아 오면 DevOps Agent는 **새 조사를 만들지 않고 기존 장애의 경과로 해석**합니다. `EXPECTED_EVENT` 결론 화면은 [진행자 데모](../facilitator/index.md)로 보여 줍니다.
 
 ## 운영에 적용할 때
 

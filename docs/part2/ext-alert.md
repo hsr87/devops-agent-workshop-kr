@@ -63,6 +63,8 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
     이후 `get-backlog-task` 로 `primaryTaskId` 와 `statusReason` 을 확인합니다.
     두 샘플을 **별개의 조사로 비교**하고 싶다면 시간 간격을 충분히 두거나, 서로 다른 Agent Space에서 보내세요.
 
+    **메인 에이전트 실습 직후라면** 위 2)의 -26% 알림도 실습의 -62% 조사에 `LINKED` 됩니다. 그 조사가 이미 완료됐어도 마찬가지였습니다(사전 검증 2회차). 결과는 -62% 조사의 재조사 요약에서 확인합니다. → [확장 B의 4)](ext-mcp.md#effect)
+
 !!! note "판별 결과는 확장 B와 함께 써야 합니다"
     MCP 서버([확장 B](ext-mcp.md))가 연결되어 있지 않으면 에이전트는 경기 일정을 알 수 없습니다. 이때는 **INCONCLUSIVE** 가 나오거나, 텔레메트리만 보고 판단합니다. 같은 알림을 MCP 연결 전과 후에 각각 보내 결과를 비교해 보세요.
 

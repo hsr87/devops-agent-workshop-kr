@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TB
-  P[진행자: Workshop Studio 이벤트 생성<br/>기존 공개 워크샵 그대로] --> A[참가자 계정 자동 프로비저닝<br/>IDE + devops-mttr-workshop 스택]
+  P[진행자: Workshop Studio 이벤트 생성<br/>기존 공개 워크샵 그대로] --> A[참가자 계정 자동 프로비저닝<br/>IDE + cloudformation-template 스택]
   A --> B[참가자: 이 가이드 사이트를 따라 진행]
   B --> C[참가자 CloudShell 또는 IDE에서<br/>git clone + bootstrap.sh]
   D[진행자 데모 계정<br/>Lab 4·5 캡처] -.데모.-> B
@@ -40,7 +40,7 @@ flowchart TB
 **Workshop Studio**
 
 - [ ] 이벤트 생성 (us-east-1). 참석자 수 + 여유 계정 확보, Event access code 준비
-- [ ] 리허설로 소요 시간 확인 (사전 검증 실측: ECS 조사 10–15분, 메인 에이전트 실습의 조사 12–25분, Lab 3 전체 약 14분)
+- [ ] 리허설로 소요 시간 확인 (사전 검증 실측: ECS 조사 약 12분, 메인 에이전트 실습의 조사 12–25분, Lab 3 전체 약 14분)
 - [ ] 참가자 계정에서 MCP 등록 확인: `deploy.sh` → `register.sh` (사전 검증 Workshop Studio 계정에서는 성공) → [리스크](risks.md)
 - [ ] 참가자 계정에서 `router.py start` 가 조사를 생성하는지 확인 (`create_backlog_task` 권한)
 - [ ] 이벤트 계정에서 GitHub 접근(`git clone`)이 되는지 확인 (CloudShell, VS Code 각각)
@@ -52,6 +52,7 @@ flowchart TB
 - [ ] CloudWatch **Transaction Search** 활성화. span이 보이기까지 최대 10분이 걸리므로 미리 켜두기
 - [ ] Lab 5 Reactive/Proactive 트리거 구성, PR이 생성된 화면 확보
 - [ ] 확장 B: 진행자 계정에서 `deploy.sh` → `register.sh` 후 메인 에이전트 실습을 한 번 돌려, 조사 기록에 MCP tool(`get_metric_baseline` 등) 호출이 남은 화면 확보
+- [ ] 확장 A+B: **광고 조사가 하나도 없는 Agent Space**에서 -26% 알림을 웹훅으로 보내 *"EXPECTED_EVENT — not an incident"* 결론 화면 확보. 메인 에이전트 실습 직후에 보내면 -62% 조사에 `LINKED` 되어 이 화면이 나오지 않습니다 → [확장 B의 4)](../part2/ext-mcp.md#effect)
 - [ ] 백업 자료: 완료된 조사 화면, Lab 3 대시보드 녹화, trace 캡처
 
 **참석자 사전 요청**
