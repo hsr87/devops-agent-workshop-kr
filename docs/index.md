@@ -10,6 +10,15 @@ AWS DevOps Agent의 기능을 **직접 써보면서** 우리 조직의 장애 �
 | 1:10–2:00 | [Part 2 · 기존 Agent 연결](part2/index.md) | 멀티에이전트에서 DevOps Agent 호출, 운영 연동 데모, 확장 패턴 | 실습 + 데모 |
 | 2:00–3:00 | [Part 3 · Discovery](part3/index.md) | 현재 상태 매핑 → 신뢰성 정의 → PoC 범위 합의 | 토론 |
 
+!!! abstract "워크샵 참가 (Join)"
+    <img src="assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="180" align="right">
+
+    **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 로 접속하거나 오른쪽 QR 코드를 스캔하세요. Event access code가 링크에 포함되어 있어 바로 참가 화면이 열립니다.
+
+    1. **Email one-time-password (OTP)** 로 로그인
+    2. 약관 동의 → **Join event**
+    3. 왼쪽 사이드바 **Open AWS console** → 그다음 [환경 준비](setup.md)
+
 ## 이 가이드를 쓰는 방법
 
 이 워크샵은 AWS 공개 워크샵 **"Extend Your Operations with Autonomous SRE"** 의 실습 환경을 그대로 사용합니다. 이 사이트는 그 위에 얹는 **진행 경로와 보충 자료**입니다.

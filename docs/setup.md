@@ -6,9 +6,11 @@
 
 원본: [Setup your workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/getting-started)
 
-1. 진행자가 안내한 Workshop Studio 링크에 접속합니다.
+<img src="../assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="160" align="right">
+
+1. **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 에 접속하거나 오른쪽 QR 코드를 스캔합니다. Event access code가 링크에 들어 있어 따로 입력하지 않아도 됩니다.
 2. **Email one-time-password (OTP)** 로 로그인합니다.
-3. 12자리 **Event access code** 를 입력하고 약관에 동의한 뒤 **Join event** 를 누릅니다.
+3. 약관에 동의하고 **Join event** 를 누릅니다. (access code를 묻는 화면이 나오면 진행자가 화면에 띄운 코드를 입력)
 4. 왼쪽 사이드바에서 **Open AWS console** 을 새 탭으로 엽니다. **VS Code IDE** 는 Part 2의 Lab 3에서만 씁니다.
 
 임시 AWS 계정, VS Code IDE, 실습 인프라(CloudFormation 스택 `cloudformation-template`)가 모두 준비되어 있습니다.
