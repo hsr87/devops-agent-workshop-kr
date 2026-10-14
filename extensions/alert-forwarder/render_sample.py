@@ -1,5 +1,7 @@
 """Print a sample alert with its "auto" time window filled in (for `aws lambda invoke`)."""
 
+
+from __future__ import annotations
 import json
 import sys
 

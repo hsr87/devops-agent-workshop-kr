@@ -17,7 +17,7 @@ flowchart LR
 !!! important "Webhook URL과 Secret을 저장해 두세요"
     Part 2의 [확장 A](../part2/ext-alert.md)에서 다시 씁니다. Secret은 발급할 때 한 번만 보여줍니다.
     ```bash
-    # VS Code 터미널: ~/.ext-workshop.env 에 값을 채워 둡니다
+    # CloudShell(또는 VS Code 터미널): ~/.ext-workshop.env 에 값을 채워 둡니다
     sed -i "s#^export WEBHOOK_URL=.*#export WEBHOOK_URL=<URL>#; s#^export WEBHOOK_SECRET=.*#export WEBHOOK_SECRET=<SECRET>#" ~/.ext-workshop.env
     source ~/.ext-workshop.env
     ```

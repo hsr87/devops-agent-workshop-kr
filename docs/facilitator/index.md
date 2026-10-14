@@ -6,12 +6,13 @@
 flowchart TB
   P[진행자: Workshop Studio 이벤트 생성<br/>기존 공개 워크샵 그대로] --> A[참가자 계정 자동 프로비저닝<br/>IDE + devops-mttr-workshop 스택]
   A --> B[참가자: 이 가이드 사이트를 따라 진행]
-  B --> C[참가자 IDE에서 git clone<br/>+ bootstrap.sh]
+  B --> C[참가자 CloudShell 또는 IDE에서<br/>git clone + bootstrap.sh]
   D[진행자 데모 계정<br/>Lab 4·5 + MCP 사전 배포] -.데모.-> B
 ```
 
 - **워크샵을 새로 publish할 필요가 없습니다.** Workshop Studio에서 기존 공개 워크샵으로 이벤트만 만들면 됩니다.
-- 참가자는 이 가이드를 보며 진행하고, 확장 실습 코드는 IDE 터미널에서 `git clone` 으로 받습니다. 이 저장소가 public이라 인증이 필요 없습니다.
+- 참가자는 이 가이드를 보며 진행하고, 확장 실습 코드는 **CloudShell**(기본) 또는 VS Code IDE 터미널에서 `git clone` 으로 받습니다. 이 저장소가 public이라 인증이 필요 없습니다.
+- 오프닝에서 **어느 환경을 쓸지 하나로 정해 안내**하세요. 기본은 콘솔 + CloudShell이고, VS Code는 Lab 3에서만 엽니다. 두 환경 모두 `bootstrap.sh` 이후 명령은 같습니다.
 
 ## 타이밍 시트
 
@@ -42,7 +43,8 @@ flowchart TB
 - [ ] 리허설로 소요 시간 확인: ECS 조사 약 5분, Lab 3 리셋 약 7분, Lab 3 전체 10–15분
 - [ ] **참가자 계정에서 `register-service`(MCP, A2A 등록)가 허용되는지 확인** → [리스크](risks.md)
 - [ ] 참가자 계정에서 `router.py start` 가 조사를 생성하는지 확인 (`create_backlog_task` 권한)
-- [ ] 이벤트 계정에서 GitHub 접근(`git clone`)이 되는지 확인
+- [ ] 이벤트 계정에서 GitHub 접근(`git clone`)이 되는지 확인 (CloudShell, VS Code 각각)
+- [ ] CloudShell에서 `bootstrap.sh` 가 Python 3.12 환경을 만드는지 확인 (`$EXT_PYTHON -V`)
 
 **진행자 데모 계정 (D-1까지)**
 

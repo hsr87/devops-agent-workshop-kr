@@ -23,6 +23,8 @@ Usage:
   python3 router.py run <sample.json>                         # all of the above for one alert
 """
 
+
+from __future__ import annotations
 import argparse
 import json
 import os

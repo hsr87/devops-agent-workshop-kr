@@ -11,9 +11,14 @@
 
 ## 1. 실행
 
+!!! info "Lab 3은 VS Code IDE 터미널에서 실행합니다"
+    Lab 3 코드(`/workshop/lab-3`)와 대시보드가 IDE 서버에 있어서 CloudShell에서는 실행할 수 없습니다. 나머지 실습은 CloudShell에서 계속하면 됩니다.
+
 ```bash
-# 1) Agent Space ID 설정 (bootstrap이 찾아 둔 값 사용)
-source ~/.ext-workshop.env
+# 1) Agent Space ID 설정 (IDE에서 bootstrap을 실행하지 않았어도 동작)
+AGENT_SPACE_ID=$(aws devops-agent list-agent-spaces --region us-east-1 \
+  --query "agentSpaces[?name=='api-error-incident-space'].agentSpaceId | [0]" --output text)
+# 위 명령이 안 되면: DevOps Agent 콘솔 → api-error-incident-space 에서 ID를 복사해 AGENT_SPACE_ID=<ID>
 sed -i "s/<YOUR_AGENT_SPACE_ID>/${AGENT_SPACE_ID}/" /workshop/lab-3/.env
 grep AGENT_SPACE_ID /workshop/lab-3/.env
 

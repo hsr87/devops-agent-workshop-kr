@@ -8,6 +8,8 @@ and because the input and output are recorded, it can be measured.
 Replace `ask()` with a call to your existing domain agent (HTTP, A2A, Lambda...).
 """
 
+
+from __future__ import annotations
 import json
 import os
 from typing import Literal

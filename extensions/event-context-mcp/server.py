@@ -11,6 +11,8 @@ Runs as a Lambda behind an API Gateway HTTP API (see deploy.sh), or locally:
 All tools are read-only.
 """
 
+
+from __future__ import annotations
 import hmac
 import json
 import os

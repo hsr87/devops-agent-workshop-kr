@@ -33,7 +33,7 @@ Part 1 Proactive에서 받은 **Webhook URL과 Secret** 을 씁니다. Agent Spa
 
 ```bash
 source ~/.ext-workshop.env        # WEBHOOK_URL / WEBHOOK_SECRET 이 채워져 있어야 함
-cd /workshop/ext/extensions/alert-forwarder
+cd $EXT_REPO/extensions/alert-forwarder
 
 # 1) 무엇이 전송되는지 먼저 확인
 python3 send_test_alert.py samples/impressions-drop-during-match.json --dry-run

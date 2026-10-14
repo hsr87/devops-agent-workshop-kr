@@ -5,10 +5,10 @@ AWS 공개 워크샵 **[Extend Your Operations with Autonomous SRE](https://cata
 - **가이드 사이트:** https://hsr87.github.io/devops-agent-workshop-kr/
 - **구성:** Part 1 기본 기능 (Lab 1) → Part 2 기존 Agent 연결 (Lab 3 + Lab 4·5 데모 + 확장 실습) → Part 3 Discovery
 
-## 참가자: Workshop Studio VS Code 터미널에서
+## 참가자: AWS 콘솔의 CloudShell(또는 VS Code IDE 터미널)에서
 
 ```bash
-cd /workshop
+cd ~
 git clone https://github.com/hsr87/devops-agent-workshop-kr.git ext
 bash ext/scripts/bootstrap.sh
 source ~/.ext-workshop.env

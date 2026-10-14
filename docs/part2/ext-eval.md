@@ -19,7 +19,7 @@
 ## 실습
 
 ```bash
-cd /workshop/ext/extensions/rca-eval
+cd $EXT_REPO/extensions/rca-eval
 
 # 결정적 지표만 계산 (LLM 호출 없음)
 python3 evaluate.py samples/ground_truth.jsonl samples/agent_results.jsonl

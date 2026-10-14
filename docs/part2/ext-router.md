@@ -32,11 +32,11 @@ flowchart LR
 
 ## 1) 알림 세 건 처리 시작 (1:25)
 
-[Lab 3](lab3.md)의 **Run SRE Agent** 를 먼저 눌러 두고 진행합니다. 두 실습 모두 DevOps Agent 조사가 끝날 때까지 10분 정도 걸립니다.
+[Lab 3](lab3.md)의 **Run SRE Agent** 를 먼저 눌러 두고 진행합니다. 두 실습 모두 DevOps Agent 조사가 끝날 때까지 10분 정도 걸립니다. 이 실습은 **CloudShell**(또는 VS Code의 새 터미널)에서 합니다.
 
 ```bash
 source ~/.ext-workshop.env
-cd /workshop/ext/extensions/triage-router
+cd $EXT_REPO/extensions/triage-router
 $EXT_PYTHON router.py start ../alert-forwarder/samples/impressions-drop-during-match.json \
                             ../alert-forwarder/samples/impressions-crash-during-match.json \
                             ../alert-forwarder/samples/order-errors-spike.json

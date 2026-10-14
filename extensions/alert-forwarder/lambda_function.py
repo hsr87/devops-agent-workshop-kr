@@ -14,6 +14,8 @@ Environment variables:
   TARGET_REGION   optional, included in the description (default us-east-1)
 """
 
+
+from __future__ import annotations
 import base64
 import hashlib
 import hmac

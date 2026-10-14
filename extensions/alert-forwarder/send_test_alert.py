@@ -6,6 +6,8 @@ Usage:
   python3 send_test_alert.py samples/order-errors-spike.json --dry-run
 """
 
+
+from __future__ import annotations
 import argparse
 import json
 import sys

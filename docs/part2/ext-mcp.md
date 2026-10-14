@@ -17,10 +17,10 @@
 
 ## 실습
 
-### 1) 로컬에서 동작 확인 (VS Code 터미널)
+### 1) 로컬에서 동작 확인 (CloudShell 또는 VS Code 터미널)
 
 ```bash
-cd /workshop/ext/extensions/event-context-mcp
+cd $EXT_REPO/extensions/event-context-mcp
 MCP_API_KEY=dev python3 server.py --port 8080 &
 MCP_URL=http://localhost:8080/mcp MCP_API_KEY=dev ./test_mcp.sh
 kill %1

@@ -10,6 +10,8 @@ a plain function in your main agent). The original Lab 3 `aidevops_client.py`
 does the same thing with a polling loop.
 """
 
+
+from __future__ import annotations
 import json
 import os
 import time

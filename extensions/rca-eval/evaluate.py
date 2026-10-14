@@ -18,6 +18,8 @@ Usage:
   python3 evaluate.py samples/ground_truth.jsonl samples/agent_results.jsonl --judge --out report.md
 """
 
+
+from __future__ import annotations
 import argparse
 import json
 import os
