@@ -52,12 +52,25 @@
 
 === "VS Code IDE"
 
+    **① AWS 자격 증명 넣기 (먼저!)** — Workshop Studio 왼쪽 사이드바 **Get AWS CLI credentials** → **Mac/Linux** 탭의 `export AWS_ACCESS_KEY_ID=...` 세 줄(또는 네 줄)을 복사해 IDE 터미널에 붙여 넣습니다.
+
+    ```bash
+    aws sts get-caller-identity --query Arn --output text   # 계정 정보가 나오면 OK
+    ```
+
+    **② 저장소 받기**
+
     ```bash
     cd /workshop
     git clone https://github.com/hsr87/devops-agent-workshop-kr.git ext
     bash ext/scripts/bootstrap.sh
     source ~/.ext-workshop.env
     ```
+
+    !!! warning "export 값은 그 터미널에서만 유효합니다"
+        - **새 터미널을 열 때마다** ①의 export를 다시 붙여 넣고 `source ~/.ext-workshop.env` 를 실행하세요. (Lab 3의 `server.py` 터미널, 메인 에이전트 실습 터미널 모두)
+        - 값은 일정 시간이 지나면 만료됩니다. `ExpiredToken` 오류가 나면 Get AWS CLI credentials에서 **새 값을 받아** 다시 붙여 넣으세요.
+        - CloudShell은 콘솔 로그인 권한을 그대로 쓰므로 이 단계가 필요 없습니다.
 
 `bootstrap.sh` 는 아래를 점검하고 `~/.ext-workshop.env` 에 값을 저장합니다.
 
