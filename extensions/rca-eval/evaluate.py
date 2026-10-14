@@ -126,7 +126,7 @@ def evaluate(truth: dict, results: dict, min_evidence: int, judge: bool, model: 
 
     out += ["", "## Verdict confusion matrix (rows = truth, cols = agent)", ""]
     out += ["| truth \\ agent | " + " | ".join(VERDICTS) + " |", "|---|" + "---|" * len(VERDICTS)]
-    for tv in VERDICTS[:2]:
+    for tv in [v for v in VERDICTS if v != "INCONCLUSIVE" or any(k[0] == v for k in confusion)]:
         out += [f"| {tv} | " + " | ".join(str(confusion[(tv, av)]) for av in VERDICTS) + " |"]
 
     out += ["", "## Per incident", "", "| incident | truth | agent | routing | root cause grade |", "|---|---|---|---|---|"]

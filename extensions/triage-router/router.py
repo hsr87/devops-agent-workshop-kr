@@ -20,6 +20,7 @@ Usage:
   python3 router.py start ../alert-forwarder/samples/*.json   # triage now, start RCAs
   python3 router.py status                                    # watch DevOps Agent tasks
   python3 router.py finish [--wait]                           # route + verify, write results
+  python3 router.py finish --reverify                         # redo route + verify only (after prompt edits)
   python3 router.py run <sample.json>                         # all of the above for one alert
 """
 
@@ -43,7 +44,7 @@ from send_test_alert import fill_window  # noqa: E402
 import devops_agent_tool  # noqa: E402
 
 RUNS = Path(os.environ.get("ROUTER_RUNS", HERE / "runs"))
-DONE = {"COMPLETED", "FAILED", "TIMED_OUT", "CANCELED", "SKIPPED", "WAIT_TIMEOUT"}
+DONE = {"COMPLETED", "FAILED", "TIMED_OUT", "CANCELED", "SKIPPED"}  # WAIT_TIMEOUT is not done: run finish again
 
 
 # ---------- context lookups: remote MCP if MCP_URL is set, otherwise the same code locally ----------
@@ -173,7 +174,9 @@ def cmd_status():
         print(f"{state['incident_id']:<48} {status['status']}{extra}")
 
 
-def finish_one(state: dict, wait: bool) -> dict | None:
+def finish_one(state: dict, wait: bool, reverify: bool = False) -> dict | None:
+    if reverify:  # rerun route + domain_verify (e.g. after editing domain_agent.py), keep the RCA task
+        state["trace"] = [s for s in state["trace"] if s["node"] in ("triage", "investigate")]
     verdict = output_of(state, "triage")
     task = output_of(state, "investigate")
     alert = state["alert"]
@@ -219,8 +222,8 @@ def finish_one(state: dict, wait: bool) -> dict | None:
     }
 
 
-def cmd_finish(wait: bool, out: str):
-    rows = [row for row in (finish_one(s, wait) for s in load_states()) if row]
+def cmd_finish(wait: bool, out: str, reverify: bool = False):
+    rows = [row for row in (finish_one(s, wait, reverify) for s in load_states()) if row]
     with open(out, "w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -237,6 +240,8 @@ def main() -> int:
     p = sub.add_parser("start"); p.add_argument("samples", nargs="+")
     sub.add_parser("status")
     p = sub.add_parser("finish"); p.add_argument("--wait", action="store_true")
+    p.add_argument("--reverify", action="store_true",
+                   help="rerun routing + domain verification without a new investigation")
     p.add_argument("--out", default=str(HERE / "results.jsonl"))
     p = sub.add_parser("run"); p.add_argument("sample")
     p.add_argument("--out", default=str(HERE / "results.jsonl"))
@@ -248,7 +253,7 @@ def main() -> int:
     elif args.cmd == "status":
         cmd_status()
     elif args.cmd == "finish":
-        cmd_finish(args.wait, args.out)
+        cmd_finish(args.wait, args.out, args.reverify)
     elif args.cmd == "run":
         cmd_start([args.sample])
         cmd_finish(True, args.out)

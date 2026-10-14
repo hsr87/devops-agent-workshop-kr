@@ -12,7 +12,13 @@ flowchart LR
 1. **Webhook 발급:** Agent Space → **Capabilities** 탭 → Webhooks → **Add Webhook** → **Generate URL and secret key** → **.csv 다운로드**
 2. **Lambda 환경변수 설정:** 원본 *Setup Automation* Step 2의 명령을 실행합니다. Lambda, Alarm, EventBridge Rule은 이미 배포되어 있습니다.
 3. **트리거:** *Method 1*(실제 API Gateway 5xx 발생, 2–3분)을 권장합니다. 시간이 부족하면 *Method 2*(`set-alarm-state`, 약 10초)를 쓰세요.
-4. **확인:** Operator access에 "Proactive Investigation: API-Gateway-5xx-Errors"가 **아무도 버튼을 누르지 않았는데** 생성되어 있습니다.
+4. **확인:** Operator access에 "Proactive Investigation: …api-5xx-errors"가 **아무도 버튼을 누르지 않았는데** 생성되어 있습니다.
+
+!!! info "새 조사가 `LINKED` 로 보이면: 정상입니다 (사전 검증에서 확인)"
+    ①의 ECS 조사와 같은 클러스터, 같은 시간대의 알람이라서 DevOps Agent가 **같은 장애로 묶습니다.** 알람 조사는 `LINKED` 상태가 되고, ①의 ECS 조사가 알람 정보를 반영해 **다시 조사**에 들어갑니다.
+    - 확인할 곳: 알람 조사를 열어 **연결 사유**(statusReason)와 메타데이터(`Source: webhook`)를 봅니다. 그다음 ①의 ECS 조사로 가서 재조사 결과를 확인합니다.
+    - 사전 검증 때 남은 연결 사유: *"Same underlying infrastructure (cloudformation-template-cluster), same incident window … The 5xx errors are the likely root cause of the order-api service unavailability reported in the primary incident."*
+    - 이 장면은 **알림이 쏟아질 때 중복 조사를 막는 기능**입니다. "알림 노이즈" 질문에 답할 때 쓰세요.
 
 !!! important "Webhook URL과 Secret을 저장해 두세요"
     Part 2의 [확장 A](../part2/ext-alert.md)에서 다시 씁니다. Secret은 발급할 때 한 번만 보여줍니다.

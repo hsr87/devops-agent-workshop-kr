@@ -58,7 +58,7 @@ order-errors-spike-…              triage=INCIDENT        UNEXPLAINED_ANOMALY  
 | `devops_agent_tool.py` | DevOps Agent를 tool로 쓰는 데 필요한 API는 **세 개뿐**입니다. `create_backlog_task`, `get_backlog_task`, `list_journal_records`. `LINKED` 상태면 묶인 primary 조사를 따라갑니다. |
 | `router.py` `triage()` | 판별은 LLM이 아니라 **규칙**입니다. 판정에 쓴 baseline, 잔차, 이벤트 이름이 trace에 남습니다. |
 | `router.py` `investigate()` | 웹훅 경로(확장 A)와 **같은 description**(판별 가이드 포함)을 API로 보냅니다. `clientToken` 으로 중복 생성을 막습니다. |
-| `domain_agent.py` | 도메인 에이전트에게 **"RCA에 없는 근거는 지어내지 말라"**, **"아니면 다른 팀을 지목하라"** 고 지시합니다. 기존 서브에이전트 호출로 바꿀 자리입니다. |
+| `domain_agent.py` | 도메인 에이전트의 판단 기준: **RCA가 확정한 원인**이 우리 서비스에 있으면 ACCEPT, 다른 팀이면 REJECT, 가설뿐이면 NEED_MORE_INFO. **"근거는 그 서비스 자체의 관측(메트릭, 로그, 코드, 배포)만 인정한다. 라우팅 규칙이나 다른 서비스의 텔레메트리는 근거가 아니다"**, **"RCA에 없는 근거는 지어내지 말라"** 도 지시합니다. 기존 서브에이전트 호출로 바꿀 자리입니다. |
 
 ```bash
 $EXT_PYTHON router.py status      # DevOps Agent 조사 상태
@@ -75,46 +75,69 @@ $EXT_PYTHON router.py finish --wait     # 조사가 끝나면 route → domain_v
 ```
 
 ```text
-impressions-crash-during-match     INCONCLUSIVE    → ads-serving-team     [NEED_MORE_INFO]
-impressions-drop-during-match      EXPECTED_EVENT  → ads-serving-team     [no RCA needed]
+impressions-crash-during-match     INCONCLUSIVE    → ads-serving-team  [NEED_MORE_INFO]
+impressions-drop-during-match      EXPECTED_EVENT  → ads-serving-team  [no RCA needed]
 order-errors-spike                 INCIDENT        → commerce-order-team  [ACCEPT]
 ```
 
-위 출력은 Workshop Studio 계정에서 **기대하는** 결과입니다. 사전 검증 계정에는 워크샵 스택이 없어서 order-api 건도 `INCONCLUSIVE` 로 나왔습니다. [사전 검증 결과](../facilitator/test-report.md#router)를 참고하세요.
+Workshop Studio 계정에서 실제로 나온 결과입니다(사전 검증). 세 시나리오가 각각 다른 판단을 보여줍니다.
 
-읽어 볼 것:
+| 알림 | 무슨 일이 있었나 | 볼 점 |
+|---|---|---|
+| 노출 -26% | 판별 단계에서 종료 | **조사 비용 0.** 경기 영향(-25%)으로 설명됨 |
+| 노출 -62% | DevOps Agent가 order-api 등 계정 리소스를 배제하고, 원인 후보(입찰/집계)를 **가설로만** 제시 → 도메인 에이전트가 `NEED_MORE_INFO` | 이 계정에는 광고 시스템이 없습니다. **추측으로 담당 팀을 정하지 않는 것**이 정답입니다 |
+| 주문 성공률 -28% | DevOps Agent가 원인을 확정: `POST /orders` 의 무제한 캐시(요청당 1MB), 배포 **뒤에** 도는 부하 테스트, 꺼진 circuit breaker 롤백 → 도메인 에이전트 `ACCEPT` | 근거(코드, 배포 이력, 파이프라인)가 **우리 서비스**를 가리킬 때만 받습니다 |
 
-- **도메인 에이전트의 `reason`** (`runs/*.json` 의 `domain_verify`). 왜 받았는지, 또는 왜 거절했는지가 근거와 함께 남습니다.
-- **`NEED_MORE_INFO` → `INCONCLUSIVE`.** RCA 근거가 부족하면 도메인 에이전트는 억지로 받지 않습니다. 이 결과가 판별 정확도에서는 "틀림"으로 잡힙니다. 그래서 **"모른다"를 어떻게 셀지**도 정의해야 합니다(Part 3).
+읽어 볼 것: `runs/*.json` 의 `domain_verify.reason`. 왜 받았는지, 왜 보류했는지가 근거와 함께 남습니다. 사전 검증에서 남은 예:
 
-!!! tip "판별 결과를 DevOps Agent에 넘기는 이유 (사전 검증에서 확인)"
-    처음에는 판별 결과 없이 알림만 넘겼습니다. 그러자 DevOps Agent가 판별을 처음부터 다시 하려다 *"event-context MCP가 없어서 INCIDENT인지 EXPECTED_EVENT인지 분류할 수 없다"* 를 핵심 장애물로 기록했습니다.
-    `investigate()` 가 **"이미 판별했다: 경기 영향을 빼고도 -49%. 원인에 집중하라"** 를 함께 넘기자 이 장애물이 사라졌고, 조사가 리소스와 원인 추적에 집중했습니다.
-    → 메인 에이전트가 이미 아는 맥락은 **반드시 조사 요청에 담아 넘기세요.** MCP를 등록할 수 없는 환경에서도 같은 효과를 얻는 방법입니다.
+> **ACCEPT** — *"order-api task-def :2 was deployed by CodePipeline at 14:57:10Z and contains an unbounded 1MB-per-request cache in POST /orders. The post-deploy LoadTest flagged this leak, yet the revision stayed live because circuit breaker rollback=false. Both the code and the deployment process belong to commerce-order-team…"*
+>
+> **NEED_MORE_INFO** — *"The RCA confirms no cause … names ads-bidding (upstream, favored) and ads-tracking (downstream) only as hypotheses, with no confirming evidence…"*
+
+!!! tip "판별 결과를 DevOps Agent에 넘기는 이유"
+    `investigate()` 는 알림과 함께 **"이미 판별했다: 경기 영향을 빼고도 -49%. 원인에 집중하라"** 를 넘깁니다. 이 문장이 없을 때 DevOps Agent는 판별을 처음부터 다시 하려다 *"event-context MCP가 없어 분류할 수 없다"* 를 핵심 장애물로 기록했습니다. 메인 에이전트가 이미 아는 맥락은 **반드시 조사 요청에 담아 넘기세요.**
 
 ## 4) 바로 측정하기 (1:50–1:55)
 
-라우터가 남긴 `results.jsonl` 은 [확장 C](ext-eval.md)가 읽는 형식 그대로입니다. 이 세 시나리오의 정답(`ground_truth.jsonl`)을 미리 넣어 두었습니다.
+라우터가 남긴 `results.jsonl` 은 [확장 C](ext-eval.md)가 읽는 형식 그대로입니다. 세 시나리오의 정답(`ground_truth.jsonl`)을 미리 넣어 두었습니다. **-62%의 정답은 `INCONCLUSIVE`** 입니다. 근거가 없을 때 "모른다"고 답하는 것을 정답으로 칩니다.
 
 ```bash
 python3 ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl
 $EXT_PYTHON ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl --judge   # RCA 일치도까지
 ```
 
-사전 검증 계정에서 나온 결과입니다(워크샵 스택 없음).
-
 ```text
-- Verdict accuracy (incident vs. expected event): 33.3% (1/3)
-- Routing accuracy on true incidents: 100.0% (2/2)
+- Verdict accuracy (incident vs. expected event): 100.0% (3/3)
+- Routing accuracy on true incidents: 100.0% (1/1)
+- Root cause (LLM judge): MATCH 100.0% (1/1)
 
-| impressions-crash-during-match | INCIDENT | INCONCLUSIVE | OK | MATCH: The agent reports that no ads-serving workload exists ... |
-| order-errors-spike             | INCIDENT | INCONCLUSIVE | OK | MISS: ... never identifies the actual cause (memory exhaustion / OOM) ... |
+| order-errors-spike | INCIDENT | INCIDENT | OK | MATCH: The agent identifies the unbounded module-level cache in POST /orders (~1MB/request, never evicted). It also covers the leaky revision staying live … |
 ```
 
-!!! question "토론: 이 숫자를 어떻게 읽어야 할까요?"
-    - 라우팅은 100%인데 판별은 33%입니다. 판별 오류 두 건은 모두 "장애인데 **모른다**고 답한" 경우입니다. 장애를 정상으로 판단한 경우는 없습니다. 둘은 위험도가 전혀 다릅니다.
-    - 단계별로 기록했기 때문에 어느 단계를 고쳐야 하는지 바로 보입니다. 여기서는 판별이나 라우팅이 아니라 **RCA에 필요한 데이터 접근**이 문제입니다.
-    - 지금 운영 중인 메인+서브 구조에서는 이 세 숫자를 따로 낼 수 있나요?
+### 해보기: 도메인 에이전트의 기준을 바꾸면 숫자가 바뀝니다 (선택, 5분)
+
+`domain_agent.py` 의 지시문이 라우팅 품질을 좌우합니다. 기준을 바꾼 뒤 **새 조사 없이** 라우팅과 검증만 다시 돌려 보세요(약 30초).
+
+```bash
+# 예: ACCEPT 조건을 "알림 메트릭의 하락까지 증명된 경우에만"으로 엄격하게 바꿔 본다
+vi domain_agent.py
+$EXT_PYTHON router.py finish --reverify
+python3 ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl
+```
+
+사전 검증에서 기준을 바꿀 때마다 결과가 이렇게 달라졌습니다.
+
+| 도메인 에이전트 기준 | -62% | 주문 -28% | 판별 정확도 |
+|---|---|---|---|
+| ① 엄격: "알림 메트릭의 하락까지 증명돼야 ACCEPT" | NEED_MORE_INFO | **NEED_MORE_INFO** | 33% |
+| ② "RCA가 확정한 원인이 우리 서비스에 있으면 ACCEPT" | 가끔 **ads-bidding으로 REJECT** | ACCEPT | 67–100% (조사마다 다름) |
+| ③ ② + "라우팅 규칙·다른 서비스의 텔레메트리는 근거가 아니다" (현재) | NEED_MORE_INFO | ACCEPT | **100%** (조사 2세트 × 3회 반복 동일) |
+
+②에서 -62%가 ads-bidding으로 넘어간 이유: DevOps Agent가 MCP의 라우팅 규칙("노출은 줄었는데 서빙 에러 없음 → 입찰 팀")을 읽고, **order-api의** "에러 없음" 메트릭을 근거처럼 썼기 때문입니다. 근거가 어느 서비스의 관측인지 따지지 않으면 **그럴듯한 오라우팅**이 생깁니다. 도메인 라우팅 신뢰성에서 가장 흔한 실패 패턴입니다.
+
+!!! question "토론"
+    - 엄격한 기준과 느슨한 기준 중 무엇이 맞을까요? 놓친 장애(엄격)와 오라우팅(느슨)의 비용이 다릅니다.
+    - 단계별로 기록했기 때문에 **어느 단계의 기준을 바꿨는지, 그래서 숫자가 어떻게 바뀌었는지** 바로 보입니다. 지금 운영 중인 메인+서브 구조에서도 이 숫자를 따로 낼 수 있나요?
 
 ## 우리 구조에 대입하기
 
@@ -126,5 +149,5 @@ $EXT_PYTHON ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl --judge   #
 | `devops_agent_tool.py` | 그대로 사용. 메인 에이전트에 tool 하나로 추가 |
 | `runs/*.json` trace | AgentCore Observability 또는 사내 로그 저장소 |
 
-!!! warning "반대 방향(DevOps Agent → 기존 에이전트) 연결은 계정에 따라 막혀 있습니다"
-    DevOps Agent가 조사 도중 기존 에이전트를 직접 부르게 하려면 기존 에이전트를 **원격 A2A 에이전트**로 등록해야 합니다(`register-service --service remoteagent`). 사전 검증 계정에서는 MCP 등록과 똑같이 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 거부되었습니다. 그래서 이 실습은 **메인 에이전트가 주도권을 갖는 방향**으로 구성했습니다. 이 방향은 계정 제한 없이 동작합니다. → [사전 검증 결과](../facilitator/test-report.md)
+!!! info "반대 방향(DevOps Agent → 기존 에이전트) 연결"
+    DevOps Agent가 조사 도중 기존 에이전트를 직접 부르게 하려면 기존 에이전트를 **원격 A2A 에이전트**로 등록합니다(`register-service --service remoteagent`). Workshop Studio 계정에서는 계정 정책상 막혀 있지 않습니다. 다만 등록할 때 DevOps Agent가 **실제 A2A 엔드포인트의 에이전트 정보를 조회**하므로, 동작하는 A2A 에이전트가 있어야 합니다. 그래서 이 실습은 **메인 에이전트가 주도권을 갖는 방향**으로 구성했습니다. → [사전 검증 결과](../facilitator/test-report.md)

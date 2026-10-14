@@ -8,9 +8,13 @@ REGION="${AWS_REGION:-us-east-1}"
 cd "$(dirname "$0")"
 set -a; source .mcp-endpoint.env; set +a
 
-SERVICE_ID=$(aws devops-agent register-service --region "$REGION" --service mcpserver \
-  --name event-context-mcp \
-  --service-details "$(python3 - <<PY
+# Re-running is safe: reuse the MCP server if it is already registered in this account.
+SERVICE_ID=$(aws devops-agent list-services --region "$REGION" \
+  --query "services[?serviceType=='mcpserver' && name=='event-context-mcp'].serviceId | [0]" --output text)
+if [ -z "$SERVICE_ID" ] || [ "$SERVICE_ID" = "None" ]; then
+  SERVICE_ID=$(aws devops-agent register-service --region "$REGION" --service mcpserver \
+    --name event-context-mcp \
+    --service-details "$(python3 - <<'PY'
 import json, os
 print(json.dumps({"mcpserver": {
   "name": "event-context-mcp",
@@ -21,10 +25,18 @@ print(json.dumps({"mcpserver": {
                                       "apiKeyHeader": "x-api-key"}}}}))
 PY
 )" --query serviceId --output text)
-echo "Registered MCP server: $SERVICE_ID"
+  echo "Registered MCP server: $SERVICE_ID"
+else
+  echo "MCP server already registered: $SERVICE_ID"
+fi
 
-TOOLS='["list_external_events","get_metric_baseline","explain_deviation","get_service_owner"]'
+# Allow the four read-only tools in the Agent Space.
+CONFIG=$(python3 -c '
+import json
+tools = ["list_external_events", "get_metric_baseline", "explain_deviation", "get_service_owner"]
+print(json.dumps({"mcpserver": {"tools": tools,
+                                "toolDetails": [{"name": t, "toolClassification": "READ_ONLY"} for t in tools]}}))')
 aws devops-agent associate-service --region "$REGION" --agent-space-id "$AGENT_SPACE_ID" \
-  --service-id "$SERVICE_ID" \
-  --configuration "{\"mcpserver\": {\"tools\": $TOOLS, \"toolDetails\": $(python3 -c "import json;print(json.dumps([{'name':t,'toolClassification':'READ_ONLY'} for t in json.loads('$TOOLS')]))")}}" >/dev/null
-echo "Associated with Agent Space $AGENT_SPACE_ID (tools: $TOOLS)"
+  --service-id "$SERVICE_ID" --configuration "$CONFIG" >/dev/null
+echo "Associated with Agent Space $AGENT_SPACE_ID (4 read-only tools)"
+echo "Deregister later with: aws devops-agent deregister-service --service-id $SERVICE_ID"

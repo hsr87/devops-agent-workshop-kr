@@ -58,7 +58,7 @@ def get_status(task_id: str) -> dict:
     }
 
 
-def wait(task_id: str, timeout_s: int = 1200, poll_s: int = 15, on_poll=None) -> dict:
+def wait(task_id: str, timeout_s: int = 2400, poll_s: int = 15, on_poll=None) -> dict:
     """Poll until the task is terminal. A LINKED task is followed to its primary task."""
     deadline = time.time() + timeout_s
     while True:

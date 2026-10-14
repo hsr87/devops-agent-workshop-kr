@@ -59,8 +59,8 @@ source ~/.ext-workshop.env
 3. Auth: **API key**, header 이름은 `x-api-key`
 4. Agent Space → **Capabilities** 에서 tool 허용
 
-!!! warning "계정에 따라 등록이 막혀 있을 수 있습니다"
-    사전 검증 때 일부 계정에서 `register-service` 가 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 거부되었습니다. Workshop Studio 계정에서 같은 제한이 걸리면 **진행자가 미리 준비한 계정에서 데모**로 대체합니다. → [사전 검증 결과](../facilitator/test-report.md)
+!!! success "Workshop Studio 계정에서는 등록됩니다 (사전 검증에서 확인)"
+    일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 등록이 거부됩니다. 하지만 **Workshop Studio 이벤트 계정에서는 등록과 Agent Space 연결이 모두 성공**했습니다. `register.sh` 는 다시 실행해도 안전합니다. 이미 등록돼 있으면 그 서버를 재사용합니다. → [사전 검증 결과](../facilitator/test-report.md)
 
 ### 4) 효과 확인
 
