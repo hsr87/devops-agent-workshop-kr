@@ -1,32 +1,75 @@
 # ② 자동 트리거 · Proactive Investigation (0:40–0:58)
 
-원본: [Lab 1 · Proactive Investigation with CloudWatch Alarms](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/proactive-investigation) → *Setup Automation* → *Trigger & Observe* → *Review Results*
-
 ```mermaid
 flowchart LR
   A[CloudWatch Alarm<br/>API Gateway 5xx] --> B[EventBridge Rule] --> C[Lambda<br/>webhook forwarder] -->|HMAC 서명| D[DevOps Agent<br/>Webhook] --> E[Investigation<br/>자동 시작]
 ```
 
-## 진행 순서
+CloudWatch 알람, EventBridge 규칙, forwarder Lambda는 **이미 배포되어 있습니다.** 할 일은 웹훅을 발급해 Lambda에 넣고 알람을 울리는 것뿐입니다.
 
-1. **Webhook 발급:** Agent Space → **Capabilities** 탭 → Webhooks → **Add Webhook** → **Generate URL and secret key** → **.csv 다운로드**
-2. **Lambda 환경변수 설정:** 원본 *Setup Automation* Step 2의 명령을 실행합니다. Lambda, Alarm, EventBridge Rule은 이미 배포되어 있습니다.
-3. **트리거:** *Method 1*(실제 API Gateway 5xx 발생, 2–3분)을 권장합니다. 시간이 부족하면 *Method 2*(`set-alarm-state`, 약 10초)를 쓰세요.
-4. **확인:** Operator access에 "Proactive Investigation: …api-5xx-errors"가 **아무도 버튼을 누르지 않았는데** 생성되어 있습니다.
+## 실습
+
+### 1. 웹훅 발급 (콘솔, 2분)
+
+1. [DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → `api-error-incident-space` → **Capabilities** 탭
+2. **Webhooks** → **Add Webhook** → **Next** → **Next** → **Generate URL and secret key**
+3. **.csv 파일을 다운로드**하고 *"I've saved and stored my URL and secret key"* 를 체크합니다.
+
+!!! important "Secret은 이때 한 번만 보입니다"
+    .csv 파일을 꼭 받아 두세요. Part 2의 [확장 A](../part2/ext-alert.md)에서도 같은 웹훅을 씁니다.
+
+### 2. 웹훅 값을 환경 파일에 저장 (CloudShell 또는 VS Code 터미널)
+
+.csv 의 값으로 `<URL>`, `<SECRET>` 을 바꿔 실행합니다.
+
+```bash
+sed -i "s#^export WEBHOOK_URL=.*#export WEBHOOK_URL=<URL>#; s#^export WEBHOOK_SECRET=.*#export WEBHOOK_SECRET=<SECRET>#" ~/.ext-workshop.env
+source ~/.ext-workshop.env
+echo "$WEBHOOK_URL"        # https://event-ai.us-east-1.api.aws/webhook/generic/... 가 나오면 OK
+```
+
+### 3. forwarder Lambda에 웹훅 설정
+
+```bash
+FUNCTION_NAME=$(aws cloudformation describe-stacks --stack-name cloudformation-template \
+  --query 'Stacks[0].Outputs[?OutputKey==`WebhookForwarderFunctionName`].OutputValue' --output text)
+aws lambda update-function-configuration --function-name "$FUNCTION_NAME" \
+  --environment "Variables={WEBHOOK_URL=${WEBHOOK_URL},WEBHOOK_SECRET=${WEBHOOK_SECRET}}" \
+  --query LastUpdateStatus --output text
+aws lambda wait function-updated --function-name "$FUNCTION_NAME" && echo "Lambda 설정 완료"
+```
+
+### 4. 알람 울리기
+
+```bash
+ALARM_NAME=$(aws cloudformation describe-stacks --stack-name cloudformation-template \
+  --query 'Stacks[0].Outputs[?OutputKey==`ProactiveInvestigationAlarmName`].OutputValue' --output text)
+aws cloudwatch set-alarm-state --alarm-name "$ALARM_NAME" --state-value ALARM \
+  --state-reason "Manual test trigger - simulating production alarm"
+sleep 15
+aws logs tail /aws/lambda/$FUNCTION_NAME --since 5m --format short | grep -iE "webhook|incident"
+```
+
+로그에 `Incident ID: ...` 와 `Webhook request sent successfully`(또는 `Webhook request sent, response not verified`)가 보이면 성공입니다. `WEBHOOK_URL not configured` 가 보이면 3번을 다시 실행하세요.
+
+??? note "실제 5xx 오류로 울리고 싶다면 (선택, 2–3분)"
+    알람 상태를 직접 바꾸는 대신, mock API Gateway를 만들어 진짜 5xx를 발생시키는 방법도 있습니다. 시간이 남는 분만 [원본 Method 1](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/proactive-investigation/trigger-observe)을 참고하세요. 이 가이드의 사전 검증은 위의 방법으로 했습니다.
+
+### 5. 자동으로 생긴 조사 확인
+
+Operator access 웹앱(①에서 연 탭)을 새로고침하면 **아무도 버튼을 누르지 않았는데** *"Proactive Investigation: cloudformation-template-api-5xx-errors"* 가 생겨 있습니다. (선택) 터미널에서도 볼 수 있습니다.
+
+```bash
+aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
+  --query 'tasks[].[title,status]' --output table
+```
 
 !!! info "새 조사가 `LINKED` 로 보이면: 정상입니다 (사전 검증에서 확인)"
     ①의 ECS 조사와 같은 클러스터, 같은 시간대의 알람이라서 DevOps Agent가 **같은 장애로 묶습니다.** 알람 조사는 `LINKED` 상태가 되고, ①의 ECS 조사가 알람 정보를 반영해 **다시 조사**에 들어갑니다.
-    - 확인할 곳: 알람 조사를 열어 **연결 사유**(statusReason)와 메타데이터(`Source: webhook`)를 봅니다. 그다음 ①의 ECS 조사로 가서 재조사 결과를 확인합니다.
+
+    - 확인할 곳: 알람 조사를 열어 **연결 사유**와 메타데이터(`Source: webhook`)를 봅니다. 그다음 ①의 ECS 조사로 가서 재조사 결과를 확인합니다.
     - 사전 검증 때 남은 연결 사유: *"Same underlying infrastructure (cloudformation-template-cluster), same incident window … The 5xx errors are the likely root cause of the order-api service unavailability reported in the primary incident."*
     - 이 장면은 **알림이 쏟아질 때 중복 조사를 막는 기능**입니다. "알림 노이즈" 질문에 답할 때 쓰세요.
-
-!!! important "Webhook URL과 Secret을 저장해 두세요"
-    Part 2의 [확장 A](../part2/ext-alert.md)에서 다시 씁니다. Secret은 발급할 때 한 번만 보여줍니다.
-    ```bash
-    # CloudShell(또는 VS Code 터미널): ~/.ext-workshop.env 에 값을 채워 둡니다
-    sed -i "s#^export WEBHOOK_URL=.*#export WEBHOOK_URL=<URL>#; s#^export WEBHOOK_SECRET=.*#export WEBHOOK_SECRET=<SECRET>#" ~/.ext-workshop.env
-    source ~/.ext-workshop.env
-    ```
 
 ## 관찰 포인트
 

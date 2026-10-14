@@ -1,13 +1,22 @@
 # Lab 3: DevOps Agent를 tool로 쓰는 멀티에이전트 (1:20–1:25 실행, 결과는 1:45 전후)
 
-원본: [Lab 3 · Build Autonomous Agents](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/build-autonomous-agents) → [Run & Observe the Workflow](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/run-and-observe)
+## 0. 환경 리셋 (휴식 직전, VS Code IDE 터미널) {#reset}
 
-## 0. 환경 리셋 (휴식 직전) {#reset}
+주문 서비스 코드를 원래의 버그 상태로 CodeCommit에 다시 올립니다. 그러면 CodePipeline이 **약 7분** 동안 돕니다. 실행해 두고 쉬세요.
 
-원본 [Lab 3 첫 페이지](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3)의 **"First: Reset the Environment"** 명령을 그대로 실행합니다. 원래의 버그 코드를 CodeCommit에 다시 push하면 파이프라인이 약 7분 동안 돕니다.
+```bash
+pip install git-remote-codecommit
+cd /tmp && rm -rf order-api-reset
+git clone codecommit::us-east-1://order-api order-api-reset
+cp /workshop/lab-1/order-processing/src/app.js order-api-reset/src/app.js
+cp /workshop/lab-1/order-processing/src/validators/orderValidator.js order-api-reset/src/validators/orderValidator.js
+cp /workshop/lab-1/order-processing/package.json order-api-reset/package.json
+cd order-api-reset && git add -A
+git commit -m "Reset to original code for Lab 3 investigation" && git push origin main
+```
 
-!!! note "Lab 1·2를 건너뛴 경우"
-    "nothing to commit, working tree clean" 이 나와도 정상입니다. 이 단계에서 설치되는 `git-remote-codecommit` 이 이후에 필요하므로 명령은 그대로 실행하세요.
+!!! note "\"nothing to commit, working tree clean\" 이 나와도 정상입니다"
+    이 워크샵은 원본의 Lab 2(코드 수정)를 건너뛰므로 코드가 이미 버그 상태입니다. 그래도 위 명령은 그대로 실행하세요. 첫 줄의 `git-remote-codecommit` 이 아래 1번에서 필요합니다.
 
 ## 1. 실행
 

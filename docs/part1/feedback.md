@@ -28,7 +28,7 @@
 
 ## (선택) Lambda 인프라 설정 문제
 
-원본: [Lab 1 · Lambda Infrastructure Investigation](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/lambda-investigation)
+참고 (원본 워크샵): [Lab 1 · Lambda Infrastructure Investigation](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/lambda-investigation)
 
 빨리 끝난 분을 위한 과제입니다. 진행자는 아래 세 화면만 짧게 보여줍니다.
 

@@ -4,8 +4,6 @@
 
 ## 1. Workshop Studio 접속
 
-원본: [Setup your workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/getting-started)
-
 <img src="../assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="160" align="right">
 
 1. **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 에 접속하거나 오른쪽 QR 코드를 스캔합니다. Event access code가 링크에 들어 있어 따로 입력하지 않아도 됩니다.
@@ -25,8 +23,6 @@
     두 환경 모두 아래 3번의 `bootstrap.sh` 를 실행하면 이후 명령은 똑같습니다.
 
 ## 2. Agent Space 만들기 — 가장 먼저!
-
-원본: [Setup your AWS environment → Step 1](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/getting-started/3-setup-aws)
 
 [AWS DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → **Begin setup**
 

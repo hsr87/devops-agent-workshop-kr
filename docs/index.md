@@ -21,22 +21,22 @@ AWS DevOps Agent의 기능을 **직접 써보면서** 우리 조직의 장애 �
 
 ## 이 가이드를 쓰는 방법
 
-이 워크샵은 AWS 공개 워크샵 **"Extend Your Operations with Autonomous SRE"** 의 실습 환경을 그대로 사용합니다. 이 사이트는 그 위에 얹는 **진행 경로와 보충 자료**입니다.
+이 워크샵은 AWS 공개 워크샵 **"Extend Your Operations with Autonomous SRE"** 의 실습 환경을 그대로 사용합니다. **이 사이트만 보고 처음부터 끝까지 진행**할 수 있도록 단계와 명령을 모두 담았습니다.
 
 ```mermaid
 flowchart LR
-  A[Workshop Studio<br/>계정·IDE·인프라 프로비저닝] --> B[원본 워크샵 Lab 페이지<br/>단계별 실습 지침]
-  C[이 가이드 사이트<br/>오늘의 경로·관점·확장 실습] --> B
+  A[Workshop Studio<br/>계정·IDE·인프라 프로비저닝] --> B[실습 실행<br/>콘솔·CloudShell·IDE]
+  C[이 가이드 사이트<br/>단계·명령·관찰 포인트] --> B
   C --> D[이 저장소 코드<br/>CloudShell 또는 VS Code에서 git clone]
   D --> A
 ```
 
 - **원본 워크샵:** <https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US>
-  각 단계의 실행 명령은 원본 페이지를 따릅니다. 이 가이드는 **어떤 Lab을 어떤 순서로 할지**, 그리고 **무엇을 눈여겨볼지**를 알려줍니다.
+  실습 환경은 이 워크샵의 것을 그대로 쓰지만, **실행 단계와 명령은 모두 이 사이트에 들어 있습니다.** 원본 페이지는 열지 않아도 됩니다(참고용).
 - **이 저장소:** 원본에 없는 확장 실습 코드(비즈니스 알림 트리거, 이벤트 컨텍스트 MCP, 정확도 평가)와 Discovery 템플릿이 들어 있습니다.
 
-!!! tip "브라우저 탭 3개를 열어두세요"
-    ① 이 가이드 · ② 원본 워크샵 페이지 · ③ Workshop Studio의 AWS 콘솔 (CloudShell 포함)
+!!! tip "브라우저 탭 3개면 충분합니다"
+    ① 이 가이드 · ② Workshop Studio의 AWS 콘솔 (CloudShell 포함) · ③ VS Code IDE (Lab 3에서)
 
     VS Code IDE는 Part 2의 Lab 3에서만 엽니다. 명령을 VS Code에서 실행하고 싶다면 그래도 됩니다 → [환경 준비](setup.md)
 

@@ -1,27 +1,50 @@
 # ① ECS 장애 조사 (0:15–0:40)
 
-원본: [Lab 1 · ECS Application Investigation](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/ecs-investigation) → *Trigger & Investigate* → *Review Mitigation*
-
 **시나리오:** 프로모션 중에 주문 서비스(ECS `order-api`)가 장애를 겪었습니다. 지금은 자동 복구되어 정상으로 보이지만, 다음 세일 전에 원인을 알아야 합니다.
 
-## 진행 순서와 관찰 포인트
+## 실습
 
-| 단계 | 할 일 (원본 지침대로) | 눈여겨볼 것 |
-|---|---|---|
-| 1 | ECS 콘솔에서 `order-api` 상태 확인 | "지금은 괜찮아 보이는" 상태에서 조사를 시작하는 것이 실제 장애 대응과 같습니다 |
-| 2 | Operator access → **Incidents** → 클러스터, 계정 ID, 시간 범위, 증상을 입력하고 **Start Investigation** | AWS Support plan 관련 오류는 무시해도 됩니다 (원본 안내) |
-| 3 | **기다리는 동안(약 10–15분) Topology 탭 탐색** | 아래 "Topology에서 해볼 것" 참고 |
-| 4 | Investigation timeline → **Root cause** | 에이전트가 **어떤 API를 왜 호출했고 무엇을 근거로 삼았는지** 보입니다 |
-| 5 | **Generate mitigation plan** | 결과가 *"No immediate operational mitigation action can be identified"* 로 나옵니다 |
-| 6 | **Agent-ready spec** → Copy spec / View details | 사람이 읽는 산출물과 에이전트가 쓰는 산출물이 따로 나옵니다 |
+### 1. 지금 상태 확인 (1분)
 
-### Topology에서 해볼 것 {#topology}
+[ECS 콘솔](https://console.aws.amazon.com/ecs/v2/clusters?region=us-east-1) → 클러스터 `cloudformation-template-cluster` → **Services** 탭 → `order-api`
+
+Running tasks `2/2`, 배포 상태 정상 — **지금은 멀쩡해 보입니다.** 실제 장애 대응도 대개 "이미 복구된 뒤"에 원인을 찾는 일입니다.
+
+### 2. 조사 시작 (2분)
+
+1. [DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → `api-error-incident-space` → **View details**
+2. 오른쪽 위 **Operator access** → 새 탭에서 웹앱이 열립니다.
+3. 왼쪽 메뉴 **Incidents** → **Start an investigation** 입력창에 아래를 붙여 넣습니다. `<계정ID>` 는 콘솔 오른쪽 위 계정 메뉴에 보이는 12자리 숫자로 바꿉니다(터미널에서는 `aws sts get-caller-identity --query Account --output text`).
+
+    ```text
+    ECS Cluster: cloudformation-template-cluster
+    AWS Account ID: <계정ID>
+    AWS Region: us-east-1
+    Time window: Past 24 hours
+    Issue: Service unavailability - customers unable to place orders. Cluster appears healthy now but experienced failures earlier.
+    ```
+
+4. **Start Investigation** → 추가 입력 창은 비워 둔 채 **Start Investigating**
+
+!!! note "AWS Support plan 관련 오류가 보여도 무시하세요"
+    실습 계정에 Support plan이 없어서 나오는 메시지이고, 조사에는 영향이 없습니다.
+
+### 3. 기다리는 동안 (약 10–15분) — Topology 탭 {#topology}
+
+웹앱의 **Topology** 탭을 엽니다.
 
 - 그래프를 둘러보고, 채팅에 `Describe my application architecture` 라고 물어보세요.
 - `order-api가 장애 나면 영향받는 리소스는?` 처럼 **영향 범위(blast radius)** 를 물어보세요.
 
 !!! question "Q. Topology에는 매니지드 서비스만 들어가나요?"
     아닙니다. 매니지드 서비스뿐 아니라 EC2, 네트워크 같은 **AWS 인프라 전반**, 그리고 연동된 **타사 서비스**도 Topology에 포함될 수 있습니다.
+
+### 4. 결과 보기
+
+1. 조사가 끝나면 **Go to root cause** (또는 **Root cause** 탭)
+2. 위쪽 탭 **Investigation timeline** 에서 에이전트가 **어떤 API를 왜 호출했고 무엇을 근거로 삼았는지** 봅니다.
+3. **Root cause** 탭 위쪽 배너의 **Generate mitigation plan** → 1–2분 뒤 **Mitigation plan** 탭에 결과가 나옵니다.
+4. **Agent-ready spec** 영역에서 **Copy spec**, **View details** 를 눌러 봅니다.
 
 ## 결과를 읽는 법
 

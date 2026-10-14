@@ -1,6 +1,6 @@
 # 멀티에이전트 패턴과 우리 구조 (1:10–1:20)
 
-원본: [Lab 3 · Multi-Agent Architecture](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/multi-agent-architecture)
+참고 (원본 워크샵): [Lab 3 · Multi-Agent Architecture](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab3/multi-agent-architecture)
 
 !!! warning "시작 전에 확인"
     휴식 직전에 [Lab 3 리셋](lab3.md#reset)을 실행했나요? 아직이라면 지금 실행하세요. CodePipeline이 약 7분 걸리므로, 이 설명을 듣는 동안 끝납니다.
