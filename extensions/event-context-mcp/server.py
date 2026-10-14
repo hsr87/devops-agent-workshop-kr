@@ -7,7 +7,7 @@ Gives the agent the business context it cannot see in telemetry:
   - get_service_owner    : owning team, on-call channel and domain boundaries (for routing)
 
 Runs as a Lambda behind an API Gateway HTTP API (see deploy.sh), or locally:
-  MCP_API_KEY=dev python3 server.py --port 8080
+  MCP_API_KEY=dev python3 server.py --port 8765
 All tools are read-only.
 """
 
@@ -316,7 +316,7 @@ if __name__ == "__main__":
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--host", default="127.0.0.1", help="use 0.0.0.0 only if you need remote access")
     args = parser.parse_args()
 

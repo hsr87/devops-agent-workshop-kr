@@ -34,6 +34,12 @@ python3 server.py
 
 출력된 **EC2 URL**을 새 탭에서 열고 **Run SRE Agent** 를 누릅니다(기본값 그대로).
 
+!!! warning "Lab 3을 먼저 시작하세요 (사전 검증에서 발견)"
+    Lab 3 코드(`aidevops_client.py`)는 Agent Space에 **진행 중인 조사가 있으면 새로 만들지 않고 그 조사를 재사용**합니다. 메인 에이전트 실습이나 확장 A의 광고 알림 조사가 돌고 있을 때 Lab 3을 시작하면, Lab 3이 **엉뚱한 조사**(예: ad_impressions)를 분석하게 됩니다.
+
+    - **순서:** Lab 3 **Run SRE Agent** → Live Output에 `No existing investigation found, creating new task...` 가 보이면 → 그다음 [메인 에이전트 실습](ext-router.md)의 `start`
+    - Live Output에 `Reusing existing investigation` 이 보이면 무엇을 재사용했는지 확인하세요. Part 1의 ECS 조사(order-api)라면 괜찮습니다. 광고 조사라면 그 조사가 끝난 뒤 다시 실행합니다.
+
 !!! tip "실행을 걸어 두고 바로 다음 실습으로"
     끝까지 10–15분 걸립니다. 실행 중에는 [메인 에이전트 실습](ext-router.md)을 진행하고, 그 실습의 조사를 기다리는 동안 이 탭으로 돌아와 아래 2·3번을 확인하세요. `server.py` 는 터미널 하나를 차지하므로 **새 터미널**을 열어 다음 실습을 하세요.
 

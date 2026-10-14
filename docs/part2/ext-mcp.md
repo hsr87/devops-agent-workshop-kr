@@ -21,8 +21,8 @@
 
 ```bash
 cd $EXT_REPO/extensions/event-context-mcp
-MCP_API_KEY=dev python3 server.py --port 8080 &
-MCP_URL=http://localhost:8080/mcp MCP_API_KEY=dev ./test_mcp.sh
+MCP_API_KEY=dev python3 server.py --port 8765 & sleep 1
+MCP_URL=http://localhost:8765/mcp MCP_API_KEY=dev ./test_mcp.sh
 kill %1
 ```
 
@@ -64,17 +64,22 @@ source ~/.ext-workshop.env
 
 ### 4) 효과 확인
 
-[확장 A](ext-alert.md)의 두 샘플을 다시 보냅니다.
+MCP를 연결한 뒤 [확장 A](ext-alert.md)로 **-26% 알림을 웹훅으로** 보냅니다. 이번에는 메인 에이전트의 판별 없이 **DevOps Agent가 스스로** 판단합니다.
 
-- `impressions-drop-during-match.json` (-26%)
-- `impressions-crash-during-match.json` (-62%)
+```bash
+cd $EXT_REPO/extensions/alert-forwarder
+python3 send_test_alert.py samples/impressions-drop-during-match.json
+```
 
-조사 timeline에서 `explain_deviation` 이 호출되는지, 그리고 판별 결과가 둘로 갈리는지 확인합니다. -26%는 *EXPECTED_EVENT*, -62%는 *INCIDENT* 여야 합니다.
+사전 검증 결과(Workshop Studio 계정, 약 15분):
 
-!!! warning "두 알림을 연달아 보내면 하나의 장애로 묶일 수 있습니다"
-    같은 서비스와 메트릭의 알림을 짧은 간격으로 보내면 두 번째 알림은 첫 조사에 `LINKED` 됩니다([확장 A 참고](ext-alert.md)). 판별 결과를 각각 비교하려면 한 샘플씩 보내고 조사가 끝난 뒤 다음 샘플을 보내세요. 또는 Agent Space를 나누세요.
+> *"The event-context analysis is decisive for the headline metric…"*
+> **Verdict: EXPECTED_EVENT — not an incident.**
 
-    MCP 연결 **전과 후**를 비교하는 것이 가장 효과적인 시연입니다. MCP가 없을 때 에이전트는 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 기록하고 판단을 유보합니다([사전 검증 결과](../facilitator/test-report.md)).
+조사 기록에서 `get_metric_baseline`, `explain_deviation`, `get_service_owner` 호출을 확인할 수 있습니다. MCP가 없을 때는 같은 알림에 대해 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 남기고 판단을 유보했습니다. **연결 전과 후의 비교**가 가장 효과적인 시연입니다.
+
+!!! warning "알림을 연달아 보내면 하나의 장애로 묶입니다"
+    같은 시간대의 알림을 몇 초~몇 분 간격으로 보내면 뒤의 알림은 앞 조사에 `LINKED` 됩니다(사전 검증: -26% 알림 3초 뒤의 주문 알림도 묶임). 판별 결과를 각각 보려면 **앞 조사가 끝난 뒤** 다음 알림을 보내세요.
 
 ## 운영에 적용할 때
 

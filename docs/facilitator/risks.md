@@ -5,6 +5,9 @@
 | 조사가 예상보다 오래 걸림 (3–10분 편차) | 높음 | 대기 시간마다 할 일을 정해둠 (Topology, 코드 리뷰, 설명). 완료 화면 백업 |
 | Lab 3 리셋 파이프라인이 안 끝난 상태에서 실행 | 중간 | 휴식 직전에 리셋 실행. 1:25 전에 CodePipeline 상태 확인 |
 | Lab 3 대시보드 접속 실패 | 중간 | VS Code 알림 링크 대신 EC2 URL 사용. pager가 뜨면 `q`. CLI로 대체: `python3 sre-agent.py --cluster ... --issue ...` |
+| Lab 3이 엉뚱한 조사를 분석함 | 중간 | Lab 3은 진행 중인 조사를 재사용함. **Lab 3을 먼저 시작**하고 Live Output에 `creating new task` 가 보인 뒤 메인 에이전트 실습 시작 |
+| Lab 3을 다시 실행했더니 PR이 안 만들어짐 | 낮음 | 브랜치 이름이 날짜 기준이라 같은 날 재실행하면 충돌. 첫 실행의 PR을 보여주면 됨 |
+| 메인 에이전트 실습의 조사가 1:50까지 안 끝남 | 중간 | 조사 12–25분. `Ctrl+C` 후 나중에 `router.py finish` 재실행. 토론은 진행자 화면(사전 검증 결과)으로 |
 | 참가자 진도 차이 | 높음 | Lambda 시나리오를 빨리 끝난 사람용 버퍼로 사용. 늦은 사람은 Proactive Method 2 |
 | MCP·A2A 등록이 계정 정책으로 거부됨 | 낮음 (Workshop Studio) | 일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed"* 로 거부됨. **Workshop Studio 계정에서는 MCP 등록·연결 성공 확인**(사전 검증). A2A는 정책상 허용되지만 실제 A2A 엔드포인트가 필요 |
 | CloudShell 세션 끊김 (20–30분 무입력) | 중간 | 다시 열고 `source ~/.ext-workshop.env`. 홈 디렉터리와 venv는 유지됨. 조사 결과는 `router.py finish` 를 다시 실행하면 이어서 받음 |

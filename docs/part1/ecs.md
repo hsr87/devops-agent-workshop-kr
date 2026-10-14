@@ -10,7 +10,7 @@
 |---|---|---|
 | 1 | ECS 콘솔에서 `order-api` 상태 확인 | "지금은 괜찮아 보이는" 상태에서 조사를 시작하는 것이 실제 장애 대응과 같습니다 |
 | 2 | Operator access → **Incidents** → 클러스터, 계정 ID, 시간 범위, 증상을 입력하고 **Start Investigation** | AWS Support plan 관련 오류는 무시해도 됩니다 (원본 안내) |
-| 3 | **기다리는 약 5분 동안 Topology 탭 탐색** | 아래 "Topology에서 해볼 것" 참고 |
+| 3 | **기다리는 동안(약 10–15분) Topology 탭 탐색** | 아래 "Topology에서 해볼 것" 참고 |
 | 4 | Investigation timeline → **Root cause** | 에이전트가 **어떤 API를 왜 호출했고 무엇을 근거로 삼았는지** 보입니다 |
 | 5 | **Generate mitigation plan** | 결과가 *"No immediate operational mitigation action can be identified"* 로 나옵니다 |
 | 6 | **Agent-ready spec** → Copy spec / View details | 사람이 읽는 산출물과 에이전트가 쓰는 산출물이 따로 나옵니다 |

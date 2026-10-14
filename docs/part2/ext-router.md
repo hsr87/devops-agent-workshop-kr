@@ -32,7 +32,9 @@ flowchart LR
 
 ## 1) 알림 세 건 처리 시작 (1:25)
 
-[Lab 3](lab3.md)의 **Run SRE Agent** 를 먼저 눌러 두고 진행합니다. 두 실습 모두 DevOps Agent 조사가 끝날 때까지 10분 정도 걸립니다. 이 실습은 **CloudShell**(또는 VS Code의 새 터미널)에서 합니다.
+[Lab 3](lab3.md)의 **Run SRE Agent** 를 **먼저** 누르고, Lab 3의 Live Output에 `creating new task` 가 보인 **뒤에** 시작합니다(Lab 3은 진행 중인 조사를 재사용하기 때문입니다). 이 실습은 **CloudShell**(또는 VS Code의 새 터미널)에서 합니다.
+
+DevOps Agent 조사는 **12–25분** 걸립니다(사전 검증 실측). 그래서 `start` 를 먼저 해 두고 기다리는 동안 코드를 읽습니다.
 
 ```bash
 source ~/.ext-workshop.env
@@ -51,7 +53,7 @@ order-errors-spike-…              triage=INCIDENT        UNEXPLAINED_ANOMALY  
 - -26%는 경기 영향으로 설명되므로 **조사 자체를 시작하지 않습니다.** 예상된 변동에 비용을 쓰지 않습니다.
 - 나머지 두 건만 DevOps Agent에 넘어갑니다. 콘솔의 **Operator access → Incidents** 에서도 보입니다.
 
-## 2) 기다리는 동안: 코드 읽기 (1:30–1:40)
+## 2) 기다리는 동안: 코드 읽기 (1:30–1:45)
 
 | 볼 곳 | 볼 것 |
 |---|---|
@@ -68,10 +70,11 @@ cat runs/*.json | head -60        # 노드별 input / output / 소요 시간
 !!! info "Lab 3과 같은 Agent Space를 씁니다"
     `order-errors-spike` 는 Lab 3이 조사 중인 order-api와 같은 서비스입니다. 그래서 DevOps Agent가 두 조사를 **같은 장애로 묶을(`LINKED`) 수 있습니다.** 그래도 라우터는 primary 조사의 결과를 가져오므로 그대로 진행됩니다.
 
-## 3) 라우팅과 도메인 검증 (1:40–1:50)
+## 3) 라우팅과 도메인 검증 (1:45–1:50)
 
 ```bash
 $EXT_PYTHON router.py finish --wait     # 조사가 끝나면 route → domain_verify → results.jsonl
+# 오래 걸리면 Ctrl+C 후 나중에 다시: $EXT_PYTHON router.py finish
 ```
 
 ```text

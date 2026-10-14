@@ -10,8 +10,8 @@ DevOps Agent가 조사 중에 호출하는 MCP 서버입니다. 외부 이벤트
 | `get_service_owner` | owner 팀, on-call 채널, 의존성, 라우팅 규칙 |
 
 ```bash
-MCP_API_KEY=dev python3 server.py --port 8080 &          # 로컬
-MCP_URL=http://localhost:8080/mcp MCP_API_KEY=dev ./test_mcp.sh
+MCP_API_KEY=dev python3 server.py --port 8765 & sleep 1  # 로컬 (8080은 VS Code IDE가 사용 중)
+MCP_URL=http://localhost:8765/mcp MCP_API_KEY=dev ./test_mcp.sh
 ./deploy.sh && set -a && source .mcp-endpoint.env && set +a && ./test_mcp.sh   # Lambda + HTTP API
 AGENT_SPACE_ID=... ./register.sh                          # DevOps Agent 등록 + tool 허용
 ```

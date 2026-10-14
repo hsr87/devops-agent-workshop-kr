@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Smoke-test an event-context MCP endpoint over Streamable HTTP.
-# Usage: MCP_URL=http://localhost:8080/mcp MCP_API_KEY=dev ./test_mcp.sh
+# Usage: MCP_URL=http://localhost:8765/mcp MCP_API_KEY=dev ./test_mcp.sh
 set -euo pipefail
 : "${MCP_URL:?set MCP_URL}" "${MCP_API_KEY:?set MCP_API_KEY}"
 cd "$(dirname "$0")"
