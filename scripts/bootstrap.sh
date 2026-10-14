@@ -40,7 +40,7 @@ else
   warn "venv/pip failed - triage-router and rca-eval --judge need these packages"
 fi
 
-cat > "$ENV_FILE" <<ENVEOF
+(umask 077; cat > "$ENV_FILE") <<ENVEOF
 export AWS_REGION=$REGION
 export AWS_ACCOUNT_ID=$ACCOUNT_ID
 export AGENT_SPACE_ID=$AGENT_SPACE_ID
@@ -51,4 +51,5 @@ export WEBHOOK_URL=\${WEBHOOK_URL:-}
 export WEBHOOK_SECRET=\${WEBHOOK_SECRET:-}
 ENVEOF
 echo
+chmod 600 "$ENV_FILE"   # will hold the webhook secret
 echo "Wrote $ENV_FILE. Load it in any terminal with:  source ~/.ext-workshop.env"

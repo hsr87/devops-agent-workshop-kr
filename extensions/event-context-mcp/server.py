@@ -11,6 +11,7 @@ Runs as a Lambda behind an API Gateway HTTP API (see deploy.sh), or locally:
 All tools are read-only.
 """
 
+import hmac
 import json
 import os
 from datetime import datetime, timedelta, timezone
@@ -268,9 +269,9 @@ def _authorized(headers: dict) -> bool:
     if not expected:
         return False
     headers = {k.lower(): v for k, v in headers.items()}
-    if headers.get("x-api-key") == expected:
+    if hmac.compare_digest(headers.get("x-api-key", "").encode(), expected.encode()):
         return True
-    return headers.get("authorization", "") == f"Bearer {expected}"
+    return hmac.compare_digest(headers.get("authorization", "").encode(), f"Bearer {expected}".encode())
 
 
 def handle_http(method: str, headers: dict, body: str | None) -> tuple[int, dict, str]:
@@ -314,6 +315,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--host", default="127.0.0.1", help="use 0.0.0.0 only if you need remote access")
     args = parser.parse_args()
 
     class Handler(BaseHTTPRequestHandler):
@@ -334,5 +336,5 @@ if __name__ == "__main__":
         def do_GET(self):
             self._respond("GET")
 
-    print(f"{SERVER_NAME} listening on http://localhost:{args.port}/mcp")
-    ThreadingHTTPServer(("0.0.0.0", args.port), Handler).serve_forever()
+    print(f"{SERVER_NAME} listening on http://{args.host}:{args.port}/mcp")
+    ThreadingHTTPServer((args.host, args.port), Handler).serve_forever()

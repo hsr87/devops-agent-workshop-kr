@@ -25,7 +25,16 @@ fi
 
 rm -f /tmp/ext-alert-forwarder.zip
 python3 -m zipfile -c /tmp/ext-alert-forwarder.zip lambda_function.py
-ENV="Variables={WEBHOOK_URL=${WEBHOOK_URL},WEBHOOK_SECRET=${WEBHOOK_SECRET},AUTH_MODE=${AUTH_MODE},AWS_ACCOUNT_ID=${ACCOUNT_ID},TARGET_REGION=${REGION}}"
+# Pass the secret through a 0600 file instead of a command-line argument (visible in `ps`).
+ENV_JSON=$(umask 077; mktemp)
+trap 'rm -f "$ENV_JSON"' EXIT
+AUTH_MODE="$AUTH_MODE" ACCOUNT_ID="$ACCOUNT_ID" REGION="$REGION" python3 -c '
+import json, os
+print(json.dumps({"Variables": {
+    "WEBHOOK_URL": os.environ["WEBHOOK_URL"], "WEBHOOK_SECRET": os.environ["WEBHOOK_SECRET"],
+    "AUTH_MODE": os.environ["AUTH_MODE"], "AWS_ACCOUNT_ID": os.environ["ACCOUNT_ID"],
+    "TARGET_REGION": os.environ["REGION"]}}))' > "$ENV_JSON"
+ENV="file://${ENV_JSON}"
 
 if aws lambda get-function --function-name "$FUNCTION_NAME" --region "$REGION" >/dev/null 2>&1; then
   aws lambda update-function-code --function-name "$FUNCTION_NAME" \

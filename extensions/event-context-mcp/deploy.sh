@@ -25,7 +25,11 @@ fi
 
 rm -f /tmp/ext-event-context-mcp.zip
 python3 -m zipfile -c /tmp/ext-event-context-mcp.zip server.py data
-ENV="Variables={MCP_API_KEY=${MCP_API_KEY}}"
+# Pass the key through a 0600 file instead of a command-line argument (visible in `ps`).
+ENV_JSON=$(umask 077; mktemp)
+trap 'rm -f "$ENV_JSON"' EXIT
+MCP_API_KEY="$MCP_API_KEY" python3 -c 'import json, os; print(json.dumps({"Variables": {"MCP_API_KEY": os.environ["MCP_API_KEY"]}}))' > "$ENV_JSON"
+ENV="file://${ENV_JSON}"
 
 if aws lambda get-function --function-name "$FUNCTION_NAME" --region "$REGION" >/dev/null 2>&1; then
   aws lambda update-function-code --function-name "$FUNCTION_NAME" \
@@ -54,7 +58,7 @@ if [ "$API_ID" = "None" ] || [ -z "$API_ID" ]; then
 fi
 ENDPOINT=$(aws apigatewayv2 get-api --api-id "$API_ID" --region "$REGION" --query ApiEndpoint --output text)
 
-cat > .mcp-endpoint.env <<ENVEOF
+(umask 077; cat > .mcp-endpoint.env) <<ENVEOF
 MCP_URL=${ENDPOINT}/mcp
 MCP_API_KEY=${MCP_API_KEY}
 ENVEOF
