@@ -28,6 +28,30 @@ source ~/.ext-workshop.env
 echo "$WEBHOOK_URL"        # https://event-ai.us-east-1.api.aws/webhook/generic/... 가 나오면 OK
 ```
 
+??? tip ".csv 파일을 터미널로 올려서 쓰기 (값을 손으로 복사하기 어려울 때)"
+    **파일 올리기**
+
+    - **CloudShell:** 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file) → .csv 선택. 홈 디렉터리(`~`)에 올라갑니다.
+    - **VS Code IDE:** 왼쪽 탐색기(Explorer)로 파일을 끌어다 놓습니다. 놓은 폴더에 올라갑니다(예: `/workshop`).
+
+    **값을 환경 파일에 저장** — 위의 `sed` 명령 대신 실행합니다. 파일 경로는 실제 위치로 바꾸세요.
+
+    ```bash
+    python3 - ~/*.csv <<'EOF'
+    import csv, os, re, sys
+    cells = [c.strip() for row in csv.reader(open(sys.argv[1], encoding="utf-8-sig")) for c in row]
+    url = next(c for c in cells if c.startswith("https://"))
+    secret = max((c for c in cells if c != url and " " not in c), key=len)
+    p = os.path.expanduser("~/.ext-workshop.env"); s = open(p).read()
+    s = re.sub(r"^export WEBHOOK_URL=.*$", "export WEBHOOK_URL=" + url, s, flags=re.M)
+    s = re.sub(r"^export WEBHOOK_SECRET=.*$", "export WEBHOOK_SECRET=" + secret, s, flags=re.M)
+    open(p, "w").write(s); print("saved")
+    EOF
+    source ~/.ext-workshop.env && echo "$WEBHOOK_URL"
+    ```
+
+    Secret이 담긴 파일이므로 다 쓴 뒤 지우세요: `rm ~/*.csv`
+
 ### 3. forwarder Lambda에 웹훅 설정
 
 ```bash

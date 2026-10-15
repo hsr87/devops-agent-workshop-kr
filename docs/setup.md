@@ -49,6 +49,7 @@
     - CloudShell의 기본 Python은 3.9입니다. `bootstrap.sh` 가 처음 한 번 **Python 3.12 환경을 자동으로 설치**합니다(약 1분).
     - 홈 디렉터리(`~`)는 CloudShell을 닫았다 열어도 유지됩니다.
     - 20–30분 동안 입력이 없으면 세션이 끊깁니다. 다시 열고 `source ~/.ext-workshop.env` 만 실행하면 됩니다.
+    - 파일 올리기: 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file). 홈 디렉터리(`~`)에 저장됩니다.
 
 === "VS Code IDE"
 
