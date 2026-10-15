@@ -13,19 +13,26 @@ flowchart LR
   A[비즈니스 메트릭 알림] --> T{triage<br/>baseline + 외부 이벤트<br/>결정적 판별}
   T -- EXPECTED_EVENT --> X[종료<br/>조사 안 함, 비용 0]
   T -- INCIDENT --> I[investigate<br/>DevOps Agent API]
-  I --> R[route<br/>서비스 카탈로그 → 후보 팀]
+  I --> C[collect_rca<br/>완료 대기 + 조사 기록 수집]
+  C --> R[route<br/>서비스 카탈로그 → 후보 팀]
   R --> V[domain_verify<br/>도메인 에이전트가<br/>ACCEPT / REJECT]
   V --> O[(results.jsonl<br/>+ 단계별 trace)]
   X --> O
   O --> E[확장 C로<br/>정확도 측정]
 ```
 
-| 노드 | 누가 결정하나 | 파일 |
-|---|---|---|
-| `triage` | **코드** (계절성 baseline과 이벤트 캘린더. 확장 B와 같은 로직) | `router.py` |
-| `investigate` | **DevOps Agent** (`create_backlog_task` → 폴링 → 조사 기록 수집) | `devops_agent_tool.py` |
-| `route` | **코드** (서비스 카탈로그의 owner) | `router.py` |
-| `domain_verify` | **도메인 서브에이전트(LLM)**. RCA 근거가 자기 도메인을 가리키는지 판단하고, 아니면 다른 팀을 지목 | `domain_agent.py` |
+모든 파일은 `$EXT_REPO/extensions/` 아래에 있습니다(브라우저 IDE에서는 `/workshop/ext/extensions/`). 노드 함수는 모두 `triage-router/router.py` 에 있고, 실제 일은 오른쪽 모듈이 합니다.
+
+| 노드 | 누가 결정하나 | 노드 함수 | 실제 일을 하는 모듈 |
+|---|---|---|---|
+| `triage` | **코드** (계절성 baseline과 이벤트 캘린더) | `triage-router/router.py` `triage()` | `event-context-mcp/server.py` `explain_deviation()` (데이터: `event-context-mcp/data/baselines.json`, `events.json`) |
+| `investigate` | **DevOps Agent** (조사 시작) | `triage-router/router.py` `investigate()` | `triage-router/devops_agent_tool.py` `start_investigation()` → `create_backlog_task` |
+| `collect_rca` | **DevOps Agent** (완료 대기 → 조사 기록 수집) | `triage-router/router.py` `finish_one()` 안에서 호출 | `triage-router/devops_agent_tool.py` `wait()`, `get_status()`, `get_result()` → `get_backlog_task`, `list_journal_records` |
+| `route` | **코드** (서비스 카탈로그의 owner) | `triage-router/router.py` `route()` | `event-context-mcp/server.py` `get_service_owner()` (데이터: `event-context-mcp/data/ownership.json`) |
+| `domain_verify` | **도메인 서브에이전트(LLM)**. RCA 근거가 자기 도메인을 가리키는지 판단하고, 아니면 다른 팀을 지목 | `triage-router/router.py` `domain_verify()` | `triage-router/domain_agent.py` `ask()` (Bedrock Claude) |
+
+!!! note "Lab 3 파일과 헷갈리지 마세요"
+    `triage-router/devops_agent_tool.py` 는 이 실습용으로 프레임워크 없이 만든 파일입니다. Lab 3의 `/workshop/lab-3/agents/devops_agent.py`(Strands 에이전트)와는 **다른 파일**이고, 역할만 같습니다.
 
 !!! question "왜 이렇게 나누나요?"
     LLM이 한 번에 "장애인가, 누구 책임인가"를 정하면 **어느 단계에서 틀렸는지 알 수 없습니다.** 노드마다 입력과 출력을 남기면 판별 오류, RCA 오류, 라우팅 오류를 **따로 측정**할 수 있습니다. 측정이 어려웠던 문제를 구조로 푸는 방법입니다.
@@ -65,10 +72,10 @@ order-errors-spike-…              triage=INCIDENT        UNEXPLAINED_ANOMALY  
 
 | 볼 곳 | 볼 것 |
 |---|---|
-| `devops_agent_tool.py` | DevOps Agent를 tool로 쓰는 데 필요한 API는 **세 개뿐**입니다. `create_backlog_task`, `get_backlog_task`, `list_journal_records`. `LINKED` 상태면 묶인 primary 조사를 따라갑니다. |
-| `router.py` `triage()` | 판별은 LLM이 아니라 **규칙**입니다. 판정에 쓴 baseline, 잔차, 이벤트 이름이 trace에 남습니다. |
-| `router.py` `investigate()` | 웹훅 경로(확장 A)와 **같은 description**(판별 가이드 포함)을 API로 보냅니다. `clientToken` 으로 중복 생성을 막습니다. |
-| `domain_agent.py` | 도메인 에이전트의 판단 기준: **RCA가 확정한 원인**이 우리 서비스에 있으면 ACCEPT, 다른 팀이면 REJECT, 가설뿐이면 NEED_MORE_INFO. **"근거는 그 서비스 자체의 관측(메트릭, 로그, 코드, 배포)만 인정한다. 라우팅 규칙이나 다른 서비스의 텔레메트리는 근거가 아니다"**, **"RCA에 없는 근거는 지어내지 말라"** 도 지시합니다. 기존 서브에이전트 호출로 바꿀 자리입니다. |
+| `triage-router/devops_agent_tool.py` | DevOps Agent를 tool로 쓰는 데 필요한 API는 **세 개뿐**입니다. `create_backlog_task`, `get_backlog_task`, `list_journal_records`. `LINKED` 상태면 묶인 primary 조사를 따라갑니다. |
+| `triage-router/router.py` `triage()` | 판별은 LLM이 아니라 **규칙**입니다. 판정에 쓴 baseline, 잔차, 이벤트 이름이 trace에 남습니다. |
+| `triage-router/router.py` `investigate()` | 웹훅 경로(확장 A)와 **같은 description**(판별 가이드 포함)을 API로 보냅니다. `clientToken` 으로 중복 생성을 막습니다. |
+| `triage-router/domain_agent.py` | 도메인 에이전트의 판단 기준: **RCA가 확정한 원인**이 우리 서비스에 있으면 ACCEPT, 다른 팀이면 REJECT, 가설뿐이면 NEED_MORE_INFO. **"근거는 그 서비스 자체의 관측(메트릭, 로그, 코드, 배포)만 인정한다. 라우팅 규칙이나 다른 서비스의 텔레메트리는 근거가 아니다"**, **"RCA에 없는 근거는 지어내지 말라"** 도 지시합니다. 기존 서브에이전트 호출로 바꿀 자리입니다. |
 
 ```bash
 $EXT_PYTHON router.py status      # DevOps Agent 조사 상태
@@ -157,8 +164,8 @@ python3 ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl
 | `triage()` 의 `explain_deviation` | 사내 이상 탐지와 이벤트 캘린더 |
 | `route()` 의 서비스 카탈로그 | 사내 서비스 카탈로그, on-call 체계 |
 | `domain_agent.ask()` | **기존 도메인 서브에이전트 호출** (HTTP, Lambda, A2A) |
-| `devops_agent_tool.py` | 그대로 사용. 메인 에이전트에 tool 하나로 추가 |
-| `runs/*.json` trace | AgentCore Observability 또는 사내 로그 저장소 |
+| `triage-router/devops_agent_tool.py` | 그대로 사용. 메인 에이전트에 tool 하나로 추가 |
+| `triage-router/runs/*.json` trace | AgentCore Observability 또는 사내 로그 저장소 |
 
 !!! info "반대 방향(DevOps Agent → 기존 에이전트) 연결"
     DevOps Agent가 조사 도중 기존 에이전트를 직접 부르게 하려면 기존 에이전트를 **원격 A2A 에이전트**로 등록합니다(`register-service --service remoteagent`). Workshop Studio 계정에서는 계정 정책상 막혀 있지 않습니다. 다만 등록할 때 DevOps Agent가 **실제 A2A 엔드포인트의 에이전트 정보를 조회**하므로, 동작하는 A2A 에이전트가 있어야 합니다. 그래서 이 실습은 **메인 에이전트가 주도권을 갖는 방향**으로 구성했습니다.
