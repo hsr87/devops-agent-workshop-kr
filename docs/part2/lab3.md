@@ -66,12 +66,18 @@ python3 server.py
 
 ## 2. 코드 읽기 (메인 에이전트 실습의 조사를 기다리는 동안)
 
-| 파일 | 볼 것 |
-|---|---|
-| `agents/devops_agent.py` | `construct_investigation_prompt`, `investigate` tool → **DevOps Agent API를 boto3로 호출**하고 10초마다 결과를 폴링 |
-| `aidevops_client.py` | API 호출부. 우리 메인 에이전트에 **tool 하나로 추가**할 때 그대로 참고할 코드 |
-| `sre-agent.py` | `handle_incident()`: 앞 에이전트의 결과가 다음 에이전트의 프롬프트로 들어가는 Workflow 패턴 |
-| `agents/analysis_agent.py` | `search_codebase`: 키워드를 하드코딩하지 않고 LLM이 RCA를 읽고 직접 고름 |
+브라우저 IDE 왼쪽 탐색기에서 `/workshop/lab-3/` 를 엽니다. 위에서 아래로 호출 순서입니다.
+
+| 단계 | 파일 | 볼 것 |
+|---|---|---|
+| 전체 흐름 | `sre-agent.py` | `handle_incident()`: [1/4]→[4/4] 에이전트를 차례로 부르고, 앞 결과를 다음 프롬프트에 넣는 Workflow 패턴. Remediation은 테스트가 실패하면 재시도 (`config.py` 의 `MAX_RETRIES`, 기본 10) |
+| ① DevOps Agent | `agents/devops_agent.py` | `construct_investigation_prompt`, `investigate` tool (Strands `@tool`) |
+| | `tools/investigation.py` | `investigate_incident()`: 조사 시작 → 폴링 → 결과 요약 |
+| | `aidevops_client.py` | **DevOps Agent API를 boto3로 호출**하는 부분. `start_investigation()` 은 진행 중인 조사가 있으면 재사용하고 없으면 `create_task()` 로 새로 만듭니다. 우리 메인 에이전트에 tool로 붙일 때 참고할 코드 |
+| ② Analysis | `agents/analysis_agent.py` | `analyze_code`, `search_codebase`: 키워드를 하드코딩하지 않고 LLM이 RCA를 읽고 직접 고름 (`tools/code_analysis.py`) |
+| ③ Remediation | `agents/remediation_agent.py` | `apply_fix`, `run_test_suite`, `rollback_changes` (`tools/code_fixer.py`) |
+| ④ PR | `agents/pr_agent.py` | `create_fix_branch`, `commit_fix`, `create_pull_request` (`tools/git_operations.py`) |
+| 설정 | `config.py`, `.env` | 모델 ID, Agent Space ID, 재시도 횟수 |
 
 !!! tip "핵심 관찰 포인트: Live Output"
     DevOps Agent 단계에서 `CLOUDWATCH describe alarms`, `ECS describe services`, `CODEPIPELINE list pipeline executions` 처럼 **에이전트가 실제로 호출하는 API가 실시간으로 보입니다.** 판단 근거가 이렇게 투명하게 보여야 결과를 믿을 수 있습니다.
@@ -82,7 +88,7 @@ python3 server.py
 |---|---|
 | DevOps Agent | 메모리 누수와 OOM 원인 조사 |
 | Analysis | 원인 2곳 식별: 크기 제한 없는 `validationCache`, 요청당 1MB 버퍼 |
-| Remediation | 수정 → 부하 테스트 1,000/1,000 통과 (실패하면 최대 3회 재시도) |
+| Remediation | 수정 → 부하 테스트 1,000/1,000 통과 (실패하면 재시도) |
 | PR | CodeCommit에 PR 생성. 본문에 **조사 근거, 변경 사항, 테스트 결과** 포함 |
 
 ## 우리 구조에 대입하기
