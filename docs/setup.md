@@ -16,7 +16,7 @@
 !!! info "명령은 어디서 실행하나요? (두 가지 중 하나만 고르세요)"
     | | 콘솔 + CloudShell (기본) | VS Code IDE |
     |---|---|---|
-    | 여는 법 | AWS 콘솔 위쪽 막대의 **CloudShell 아이콘** (`>_`), 리전 **us-east-1** | Workshop Studio 사이드바 → **VS Code IDE** → Terminal |
+    | 여는 법 | AWS 콘솔 위쪽 막대의 **CloudShell 아이콘** (`>_`), 리전 **us-east-1** | Workshop Studio 사이드바 → **VS Code IDE** → Terminal. **브라우저에서 열리는 실습용 IDE**이고, 내 PC의 VS Code가 아닙니다 |
     | 쓰는 곳 | Part 1 명령, 확장 실습 전부 | 위와 같음 |
     | Lab 3 | **VS Code IDE에서만** 가능 (Lab 3 코드와 대시보드가 IDE 서버에 있음) | 그대로 |
 
