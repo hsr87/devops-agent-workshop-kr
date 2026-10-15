@@ -32,7 +32,7 @@ flowchart LR
 
 ## 1) 알림 세 건 처리 시작 (1:25)
 
-[Lab 3](lab3.md)의 **Run SRE Agent** 를 **먼저** 누르고, Lab 3의 Live Output에 `creating new task` 가 보인 **뒤에** 시작합니다(Lab 3은 진행 중인 조사를 재사용하기 때문입니다). 이 실습은 **CloudShell**(또는 VS Code의 새 터미널)에서 합니다.
+[Lab 3](lab3.md)의 **Run SRE Agent** 를 **먼저** 누르고, Lab 3의 Live Output에 `creating new task` 가 보인 **뒤에** 시작합니다(Lab 3은 진행 중인 조사를 재사용하기 때문입니다). 이 실습은 VS Code IDE의 **새 터미널**에서 합니다(Lab 3 `server.py` 가 첫 터미널을 쓰고 있음).
 
 DevOps Agent 조사는 **12–25분** 걸립니다(사전 검증 실측). 그래서 `start` 를 먼저 해 두고 기다리는 동안 코드를 읽습니다.
 

@@ -17,7 +17,7 @@
 
 ## 실습
 
-### 1) 로컬에서 동작 확인 (CloudShell 또는 VS Code 터미널)
+### 1) 로컬에서 동작 확인 (VS Code IDE 터미널)
 
 ```bash
 cd $EXT_REPO/extensions/event-context-mcp

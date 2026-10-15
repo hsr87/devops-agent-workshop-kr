@@ -25,9 +25,9 @@ AWS DevOps Agent의 기능을 **직접 써보면서** 우리 조직의 장애 �
 
 ```mermaid
 flowchart LR
-  A[Workshop Studio<br/>계정·IDE·인프라 프로비저닝] --> B[실습 실행<br/>콘솔·CloudShell·IDE]
+  A[Workshop Studio<br/>계정·IDE·인프라 프로비저닝] --> B[실습 실행<br/>콘솔·VS Code IDE]
   C[이 가이드 사이트<br/>단계·명령·관찰 포인트] --> B
-  C --> D[이 저장소 코드<br/>CloudShell 또는 VS Code에서 git clone]
+  C --> D[이 저장소 코드<br/>VS Code IDE에서 git clone]
   D --> A
 ```
 
@@ -36,9 +36,9 @@ flowchart LR
 - **이 저장소:** 원본에 없는 확장 실습 코드(비즈니스 알림 트리거, 이벤트 컨텍스트 MCP, 정확도 평가)와 Discovery 템플릿이 들어 있습니다.
 
 !!! tip "브라우저 탭 3개면 충분합니다"
-    ① 이 가이드 · ② Workshop Studio의 AWS 콘솔 (CloudShell 포함) · ③ VS Code IDE (Lab 3에서)
+    ① 이 가이드 · ② Workshop Studio의 AWS 콘솔 · ③ VS Code IDE (모든 명령은 여기 터미널에서)
 
-    VS Code IDE는 Part 2의 Lab 3에서만 엽니다. 명령을 VS Code에서 실행하고 싶다면 그래도 됩니다 → [환경 준비](setup.md)
+    → [환경 준비](setup.md)
 
 ## 오늘 다룰 질문
 

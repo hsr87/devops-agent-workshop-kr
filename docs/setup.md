@@ -9,16 +9,16 @@
 1. **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 에 접속하거나 오른쪽 QR 코드를 스캔합니다. Event access code가 링크에 들어 있어 따로 입력하지 않아도 됩니다.
 2. **Email one-time-password (OTP)** 로 로그인합니다.
 3. 약관에 동의하고 **Join event** 를 누릅니다. (access code를 묻는 화면이 나오면 진행자가 화면에 띄운 코드를 입력)
-4. 왼쪽 사이드바에서 **Open AWS console** 을 새 탭으로 엽니다. **VS Code IDE** 는 Part 2의 Lab 3에서만 씁니다.
+4. 왼쪽 사이드바에서 **Open AWS console** 과 **VS Code IDE** 를 각각 새 탭으로 엽니다. 명령은 모두 VS Code IDE 터미널에서 실행합니다.
 
 임시 AWS 계정, VS Code IDE, 실습 인프라(CloudFormation 스택 `cloudformation-template`)가 모두 준비되어 있습니다.
 
-!!! info "명령은 어디서 실행하나요? (두 가지 중 하나만 고르세요)"
-    | | 콘솔 + CloudShell (기본) | VS Code IDE |
+!!! info "명령은 어디서 실행하나요? → VS Code IDE 터미널"
+    | | VS Code IDE (기본) | 콘솔 + CloudShell (대안) |
     |---|---|---|
-    | 여는 법 | AWS 콘솔 위쪽 막대의 **CloudShell 아이콘** (`>_`), 리전 **us-east-1** | Workshop Studio 사이드바 → **VS Code IDE** → Terminal. **브라우저에서 열리는 실습용 IDE**이고, 내 PC의 VS Code가 아닙니다 |
-    | 쓰는 곳 | Part 1 명령, 확장 실습 전부 | 위와 같음 |
-    | Lab 3 | **VS Code IDE에서만** 가능 (Lab 3 코드와 대시보드가 IDE 서버에 있음) | 그대로 |
+    | 여는 법 | Workshop Studio 사이드바 → **VS Code IDE** → 메뉴 **Terminal → New Terminal**. **브라우저에서 열리는 실습용 IDE**이고, 내 PC의 VS Code가 아닙니다 | AWS 콘솔 위쪽 막대의 **CloudShell 아이콘** (`>_`), 리전 **us-east-1** |
+    | 쓰는 곳 | 모든 실습 | Part 1 명령, 확장 실습 |
+    | Lab 3 | 가능 (Lab 3 코드와 대시보드가 IDE 서버에 있음) | **불가** |
 
     두 환경 모두 아래 3번의 `bootstrap.sh` 를 실행하면 이후 명령은 똑같습니다.
 
@@ -36,20 +36,6 @@
     **Create** 버튼을 먼저 누르고, 기다리는 동안 다음 단계를 진행하세요. 나머지 Lab도 모두 이 이름을 기준으로 진행합니다.
 
 ## 3. 이 저장소 내려받기
-
-=== "콘솔 + CloudShell"
-
-    ```bash
-    cd ~
-    git clone https://github.com/hsr87/devops-agent-workshop-kr.git ext
-    bash ext/scripts/bootstrap.sh
-    source ~/.ext-workshop.env
-    ```
-
-    - CloudShell의 기본 Python은 3.9입니다. `bootstrap.sh` 가 처음 한 번 **Python 3.12 환경을 자동으로 설치**합니다(약 1분).
-    - 홈 디렉터리(`~`)는 CloudShell을 닫았다 열어도 유지됩니다.
-    - 20–30분 동안 입력이 없으면 세션이 끊깁니다. 다시 열고 `source ~/.ext-workshop.env` 만 실행하면 됩니다.
-    - 파일 올리기: 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file). 홈 디렉터리(`~`)에 저장됩니다.
 
 === "VS Code IDE"
 
@@ -73,6 +59,20 @@
         - 값은 일정 시간이 지나면 만료됩니다. `ExpiredToken` 오류가 나면 Get AWS CLI credentials에서 **새 값을 받아** 다시 붙여 넣으세요.
         - CloudShell은 콘솔 로그인 권한을 그대로 쓰므로 이 단계가 필요 없습니다.
 
+=== "콘솔 + CloudShell"
+
+    ```bash
+    cd ~
+    git clone https://github.com/hsr87/devops-agent-workshop-kr.git ext
+    bash ext/scripts/bootstrap.sh
+    source ~/.ext-workshop.env
+    ```
+
+    - CloudShell의 기본 Python은 3.9입니다. `bootstrap.sh` 가 처음 한 번 **Python 3.12 환경을 자동으로 설치**합니다(약 1분).
+    - 홈 디렉터리(`~`)는 CloudShell을 닫았다 열어도 유지됩니다.
+    - 20–30분 동안 입력이 없으면 세션이 끊깁니다. 다시 열고 `source ~/.ext-workshop.env` 만 실행하면 됩니다.
+    - 파일 올리기: 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file). 홈 디렉터리(`~`)에 저장됩니다.
+
 `bootstrap.sh` 는 아래를 점검하고 `~/.ext-workshop.env` 에 값을 저장합니다.
 
 - AWS 계정과 워크샵 스택 상태
@@ -86,7 +86,7 @@
 ??? question "git clone이 막혀 있다면?"
     아래처럼 압축 파일로 내려받아도 됩니다.
     ```bash
-    cd ~ && curl -sL https://github.com/hsr87/devops-agent-workshop-kr/archive/refs/heads/main.tar.gz | tar xz
+    cd /workshop && curl -sL   # CloudShell이면 cd ~ https://github.com/hsr87/devops-agent-workshop-kr/archive/refs/heads/main.tar.gz | tar xz
     mv devops-agent-workshop-kr-main ext && bash ext/scripts/bootstrap.sh
     ```
 

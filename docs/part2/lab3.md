@@ -27,7 +27,7 @@ git commit -m "Reset to original code for Lab 3 investigation" && git push origi
 ## 1. 실행
 
 !!! info "Lab 3은 VS Code IDE 터미널에서 실행합니다"
-    Lab 3 코드(`/workshop/lab-3`)와 대시보드가 IDE 서버에 있어서 CloudShell에서는 실행할 수 없습니다. 나머지 실습은 CloudShell에서 계속하면 됩니다.
+    Lab 3 코드(`/workshop/lab-3`)와 대시보드가 IDE 서버에 있어서 CloudShell에서는 실행할 수 없습니다.
 
     IDE 터미널을 새로 열었다면 먼저 **Get AWS CLI credentials** 의 export 값을 붙여 넣으세요 → [환경 준비](../setup.md)
 

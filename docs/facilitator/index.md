@@ -6,12 +6,12 @@
 flowchart TB
   P[진행자: Workshop Studio 이벤트 생성<br/>기존 공개 워크샵 그대로] --> A[참가자 계정 자동 프로비저닝<br/>IDE + cloudformation-template 스택]
   A --> B[참가자: 이 가이드 사이트를 따라 진행]
-  B --> C[참가자 CloudShell 또는 IDE에서<br/>git clone + bootstrap.sh]
+  B --> C[참가자 VS Code IDE 터미널에서<br/>git clone + bootstrap.sh]
 ```
 
 - **워크샵을 새로 publish할 필요가 없습니다.** Workshop Studio에서 기존 공개 워크샵으로 이벤트만 만들면 됩니다.
-- 참가자는 이 가이드를 보며 진행하고, 확장 실습 코드는 **CloudShell**(기본) 또는 VS Code IDE 터미널에서 `git clone` 으로 받습니다. 이 저장소가 public이라 인증이 필요 없습니다.
-- 오프닝에서 **어느 환경을 쓸지 하나로 정해 안내**하세요. 기본은 콘솔 + CloudShell이고, VS Code는 Lab 3에서만 엽니다. 두 환경 모두 `bootstrap.sh` 이후 명령은 같습니다.
+- 참가자는 이 가이드를 보며 진행하고, 확장 실습 코드는 **VS Code IDE 터미널**(기본, CloudShell도 가능)에서 `git clone` 으로 받습니다. 이 저장소가 public이라 인증이 필요 없습니다.
+- 오프닝에서 **어느 환경을 쓸지 하나로 정해 안내**하세요. 기본은 **VS Code IDE**입니다(Lab 3까지 한 곳에서 진행). 시작할 때 **Get AWS CLI credentials** export를 붙여 넣게 하세요. CloudShell을 써도 `bootstrap.sh` 이후 명령은 같습니다.
 
 ## 타이밍 시트
 
