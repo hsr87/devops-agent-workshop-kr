@@ -7,7 +7,6 @@ flowchart TB
   P[진행자: Workshop Studio 이벤트 생성<br/>기존 공개 워크샵 그대로] --> A[참가자 계정 자동 프로비저닝<br/>IDE + cloudformation-template 스택]
   A --> B[참가자: 이 가이드 사이트를 따라 진행]
   B --> C[참가자 CloudShell 또는 IDE에서<br/>git clone + bootstrap.sh]
-  D[진행자 데모 계정<br/>Lab 4·5 캡처] -.데모.-> B
 ```
 
 - **워크샵을 새로 publish할 필요가 없습니다.** Workshop Studio에서 기존 공개 워크샵으로 이벤트만 만들면 됩니다.
@@ -32,7 +31,7 @@ flowchart TB
 | 1:30 | 코드 읽기: `devops_agent_tool.py` (API 3개), `triage()`, `domain_agent.py` → Lab 3 대시보드의 Live Output 확인 | 코드 리뷰 | |
 | 1:45 | `router.py finish --wait` → 도메인 에이전트의 ACCEPT/NEED_MORE_INFO 근거 읽기. 안 끝났으면 진행자 화면으로 | 실습 | 사전 검증 결과 화면 |
 | 1:50 | `evaluate.py` 로 판별·라우팅 정확도 측정 → 도메인 기준 비교표로 토론 | 실습 | |
-| 1:55 | Lab 4·5 핵심 화면 (Memory, trace), 확장 A·B 소개 | 시청 | trace 캡처 |
+| 1:55 | Lab 4·5 아키텍처 그림 1장 설명, 확장 A·B 소개 | 시청 | |
 | 2:00 | Discovery 시작 | 토론 | |
 
 ## 사전 준비 체크리스트
@@ -48,12 +47,9 @@ flowchart TB
 
 **진행자 데모 계정 (D-1까지)**
 
-- [ ] Lab 4 Runtime + Memory(Long-term, 과거 인시던트 시딩) + Observability 배포
-- [ ] CloudWatch **Transaction Search** 활성화. span이 보이기까지 최대 10분이 걸리므로 미리 켜두기
-- [ ] Lab 5 Reactive/Proactive 트리거 구성, PR이 생성된 화면 확보
 - [ ] 확장 B: 진행자 계정에서 `deploy.sh` → `register.sh` 후 메인 에이전트 실습을 한 번 돌려, 조사 기록에 MCP tool(`get_metric_baseline` 등) 호출이 남은 화면 확보
 - [ ] 확장 A+B: **광고 조사가 하나도 없는 Agent Space**에서 -26% 알림을 웹훅으로 보내 *"EXPECTED_EVENT — not an incident"* 결론 화면 확보. 메인 에이전트 실습 직후에 보내면 -62% 조사에 `LINKED` 되어 이 화면이 나오지 않습니다 → [확장 B의 4)](../part2/ext-mcp.md#effect)
-- [ ] 백업 자료: 완료된 조사 화면, Lab 3 대시보드 녹화, trace 캡처
+- [ ] 백업 자료: 완료된 조사 화면, Lab 3 대시보드 녹화
 
 **참석자 사전 요청**
 

@@ -8,7 +8,7 @@ AWS DevOps Agent의 기능을 **직접 써보면서** 우리 조직의 장애 �
 | 0:15–1:05 | [Part 1 · 기본 기능](part1/index.md) | 장애 조사 → RCA → Mitigation, 알람 자동 트리거, 피드백 루프 | 실습 |
 | 1:05–1:10 | 휴식 | (휴식 직전에 Lab 3 환경 리셋 실행) | – |
 | 1:10–2:00 | [Part 2 · 기존 Agent 연결](part2/index.md) | 멀티에이전트에서 DevOps Agent 호출, 운영 연동 데모, 확장 패턴 | 실습 + 데모 |
-| 2:00–3:00 | [Part 3 · Discovery](part3/index.md) | 현재 상태 매핑 → 신뢰성 정의 → PoC 범위 합의 | 토론 |
+| 2:00–3:00 | [Part 3 · Discovery](part3/index.md) | 고객 상황 듣기 → 신뢰 기준 → PoC 범위 합의 | 토론 |
 
 !!! abstract "워크샵 참가 (Join)"
     <img src="assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="180" align="right">

@@ -4,17 +4,22 @@
 
 주문 서비스 코드를 원래의 버그 상태로 CodeCommit에 다시 올립니다. 그러면 CodePipeline이 **약 7분** 동안 돕니다. 실행해 두고 쉬세요.
 
+!!! warning "브라우저의 **VS Code IDE** 탭 터미널에서 실행하세요"
+    내 PC(Mac/Windows) 터미널이나 CloudShell에서 실행하면 `cp: lab-1/...: No such file or directory` 가 납니다. Lab 1 원본 코드(`/workshop/lab-1`)가 IDE 서버에만 있기 때문입니다.
+
 ```bash
 pip install git-remote-codecommit
-cd /workshop                      # IDE 왼쪽 탐색기의 최상위 폴더
-R=/tmp/order-api-reset && rm -rf $R
-git clone codecommit::us-east-1://order-api $R
-cp lab-1/order-processing/src/app.js $R/src/app.js
-cp lab-1/order-processing/src/validators/orderValidator.js $R/src/validators/orderValidator.js
-cp lab-1/order-processing/package.json $R/package.json
-cd $R && git add -A
+cd /workshop/lab-1/order-processing &&
+R=/tmp/order-api-reset && rm -rf $R &&
+git clone codecommit::us-east-1://order-api $R &&
+cp src/app.js $R/src/app.js &&
+cp src/validators/orderValidator.js $R/src/validators/orderValidator.js &&
+cp package.json $R/package.json &&
+cd $R && git add -A &&
 git commit -m "Reset to original code for Lab 3 investigation" && git push origin main
 ```
+
+명령이 `&&` 로 이어져 있어 중간에 실패하면 거기서 멈춥니다.
 
 !!! note "\"nothing to commit, working tree clean\" 이 나와도 정상입니다"
     이 워크샵은 원본의 Lab 2(코드 수정)를 건너뛰므로 코드가 이미 버그 상태입니다. 그래도 위 명령은 그대로 실행하세요. 첫 줄의 `git-remote-codecommit` 이 아래 1번에서 필요합니다.

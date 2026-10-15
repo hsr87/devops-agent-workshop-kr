@@ -2,6 +2,7 @@
 reference/
 # Customer-specific planning notes
 workshop-plan.md
+discovery.md
 # Secrets / generated
 .mcp-endpoint.env
 *.env

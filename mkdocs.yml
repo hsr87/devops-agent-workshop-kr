@@ -46,7 +46,7 @@ nav:
       - "멀티에이전트 패턴": part2/architecture.md
       - "Lab 3 실행": part2/lab3.md
       - "실습 · 메인 에이전트에 붙이기": part2/ext-router.md
-      - "Lab 4·5 데모": part2/demo.md
+      - "Lab 4·5 아키텍처": part2/demo.md
       - "확장 A · 비즈니스 알림 트리거": part2/ext-alert.md
       - "확장 B · 이벤트 컨텍스트 MCP": part2/ext-mcp.md
       - "확장 C · 정확도 평가": part2/ext-eval.md
