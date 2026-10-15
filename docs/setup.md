@@ -86,7 +86,8 @@
 ??? question "git clone이 막혀 있다면?"
     아래처럼 압축 파일로 내려받아도 됩니다.
     ```bash
-    cd /workshop && curl -sL   # CloudShell이면 cd ~ https://github.com/hsr87/devops-agent-workshop-kr/archive/refs/heads/main.tar.gz | tar xz
+    cd /workshop   # CloudShell이면 cd ~
+    curl -sL https://github.com/hsr87/devops-agent-workshop-kr/archive/refs/heads/main.tar.gz | tar xz
     mv devops-agent-workshop-kr-main ext && bash ext/scripts/bootstrap.sh
     ```
 
