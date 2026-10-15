@@ -92,12 +92,16 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
   --query 'tasks[].[title,status]' --output table
 ```
 
-!!! info "새 조사가 `LINKED` 로 보이면: 정상입니다 (사전 검증에서 확인)"
-    ①의 ECS 조사와 같은 클러스터, 같은 시간대의 알람이라서 DevOps Agent가 **같은 장애로 묶습니다.** 알람 조사는 `LINKED` 상태가 되고, ①의 ECS 조사가 알람 정보를 반영해 **다시 조사**에 들어갑니다.
+!!! info "결과는 알람을 울린 시점에 따라 두 가지입니다 (리허설에서 둘 다 확인)"
+    DevOps Agent는 들어온 알람을 **최근 약 20분 안에 진행 중인 조사**와 비교해, 같은 장애면 묶고(Linked) 아니면 새 조사를 만듭니다([공식 문서](https://docs.aws.amazon.com/devopsagent/latest/userguide/production-operations-autonomous-incident-response.html#incident-triage)).
 
-    - 확인할 곳: 알람 조사를 열어 **연결 사유**와 메타데이터(`Source: webhook`)를 봅니다. 그다음 ①의 ECS 조사로 가서 재조사 결과를 확인합니다.
-    - 사전 검증 때 남은 연결 사유: *"Same underlying infrastructure (cloudformation-template-cluster), same incident window … The 5xx errors are the likely root cause of the order-api service unavailability reported in the primary incident."*
-    - 이 장면은 **알림이 쏟아질 때 중복 조사를 막는 기능**입니다. "알림 노이즈" 질문에 답할 때 쓰세요.
+    | 언제 울렸나 | 결과 | 볼 곳 |
+    |---|---|---|
+    | ①의 ECS 조사가 **이미 끝난 뒤** (워크샵 일정상 보통 이쪽) | **독립 조사**로 완료. 결론: *"Not a real incident. The alarm was manually forced into ALARM as a test"* | 인시던트 목록의 *Proactive Investigation: …api-5xx-errors* |
+    | ①의 ECS 조사가 **진행 중일 때** | 알람 조사는 `LINKED`, ①의 ECS 조사가 알람 정보를 받아 다시 조사 | ①의 ECS 조사 **조사 타임라인**. 목록에서는 따로 안 보일 수 있음 |
+
+    - **독립 조사일 때 볼 장면:** 알람 사유("Manual test trigger"), 실제 5xx 0건, 29초 만에 OK로 복귀한 사실을 근거로 **"사람이 강제로 울린 테스트 알람"이라고 판별**합니다. "진짜 인시던트인가?"라는 질문에 에이전트가 근거를 들어 답하는 장면입니다.
+    - **LINKED일 때 볼 장면:** 알림이 쏟아질 때 **중복 조사를 막는 기능**입니다. "알림 노이즈" 질문에 답할 때 쓰세요.
 
 ## 관찰 포인트
 
@@ -105,7 +109,7 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
 |---|---|
 | 메타데이터: `Source: webhook`, `Triggered By: lambda-automation` | 누가, 언제, 왜 조사를 시작했는지 **감사 추적**이 남습니다 |
 | 조사 흐름: Context gathering → Data collection → Analysis → Root cause | 배포 이력과 설정 변경을 **먼저 배제**하고 결론을 냅니다 |
-| 결론: *"No recent deployments, no config changes → external trigger or simulated condition"* | 아래 "인시던트 판별" 참고 |
+| 결론: *"Not a real incident … manually forced into ALARM as a test"* (배포·설정 변경·실제 오류를 먼저 확인) | 아래 "인시던트 판별" 참고 |
 
 !!! question "Q. 자동 트리거 소스는 무엇이 되나요? Grafana나 Slack도 되나요?"
     대부분 됩니다. 원리는 **웹훅으로 HTTP POST를 보낼 수 있으면 무엇이든 트리거가 된다**는 것입니다.
@@ -116,7 +120,7 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" \
 
 ## 인시던트 판별로 연결하기
 
-이 시나리오의 결론은 *"최근 배포도 설정 변경도 없으니 외부 요인이거나 시뮬레이션된 상황"* 입니다. 에이전트가 **배포와 설정 변경 가설을 배제한 뒤에** 판단을 내린 것입니다.
+이 시나리오의 결론은 *"실제 장애가 아니라 시험용으로 강제로 울린 알람"* 입니다. 에이전트가 **실제 오류 지표, 배포, 설정 변경을 먼저 확인해 배제한 뒤에** 판단을 내린 것입니다.
 
 이 추론 구조가 바로 "진짜 장애인가, 예상된 변동인가"를 가리는 데 필요한 것입니다. 하지만 축구 경기 일정, 프로모션, 공휴일 같은 **비즈니스 맥락은 텔레메트리에 없습니다.** 그래서 에이전트에게 따로 알려줘야 합니다 → [확장 B · 이벤트 컨텍스트 MCP](../part2/ext-mcp.md)
 
