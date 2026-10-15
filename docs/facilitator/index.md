@@ -21,7 +21,7 @@ flowchart TB
 | 0:00 | 아젠다, 오늘의 네 가지 질문 → **Agent Space 생성 버튼부터 누르게** | 접속, Agent Space 생성 중 | 접속 문제: Event access code 재배포 |
 | 0:10 | `git clone` + `bootstrap.sh` 안내 | 저장소 받기 | clone 실패 시 tarball 명령 |
 | 0:15 | ECS 조사 시작 → **기다리는 동안 Topology 시연** | 조사 중 (약 10–15분) | 완료된 조사 화면 캡처 |
-| 0:25 | Root cause → Mitigation "조치 없음"의 의미 → spec | 결과 확인 | |
+| 0:25 | Root cause → Mitigation(조치 없음 또는 임시 완화책, 실행마다 다름) → spec | 결과 확인 | |
 | 0:40 | Webhook 발급 → Lambda 설정 → Method 1 트리거 | 설정 | 늦으면 Method 2 |
 | 0:50 | 자동 생성된 조사 + 메타데이터, "외부 요인" 결론 → 판별 화두 | 결과 확인 | |
 | 0:58 | RCA 반박 미니 실습, Q3·Q4·Q5 답변 | 채팅 재조사 | |

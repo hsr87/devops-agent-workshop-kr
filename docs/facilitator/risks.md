@@ -16,7 +16,7 @@
 | 확장 A의 -26% 알림이 `LINKED` 되어 "EXPECTED_EVENT" 결론이 안 보임 | 높음 (메인 에이전트 실습 직후) | 정상. 실습의 -62% 조사에 묶이고, 그 조사가 *"recovering (−62% → −26%)"* 로 재조사됨. 결론 화면은 진행자 데모 계정(광고 조사 없는 상태)에서 미리 확보 |
 | CLI로 Agent Space를 만들면 계정 연결이 `Unauthorized` | 낮음 | 콘솔의 Begin setup을 쓰면 해당 없음. CLI로 만들 때는 역할 생성 후 1–10분(IAM 전파) 기다렸다가 `associate-service` 재시도. 같은 이름의 역할을 지웠다 다시 만들면 더 오래 걸리므로 새 이름 사용 |
 | ECS 조사에서 Exit Code 137(OOM)이 안 보임 | 중간 | 환경 생성 직후에는 아직 OOM 전일 수 있음. 에이전트가 코드와 `[MEMORY LEAK]` 로그로 누수를 확정하고, 확인 못 한 부분은 investigation gap으로 따로 적는 것이 정상 동작 |
-| Webhook Secret 분실 | 중간 | Agent Space → Capabilities → 웹훅 **Rotate** 로 재발급 (URL은 그대로) |
+| Webhook Secret 분실 | 중간 | Agent Space → 기능(Capabilities) → 웹훅 **Rotate** 로 재발급 (URL은 그대로) |
 | 웹훅 200인데 조사가 안 생김 | 낮음 | 같은 `incidentId`/`timestamp` 는 중복으로 무시됨. forwarder는 매번 고유 ID 생성. 그래도 안 되면 payload 형식 확인 |
 | "워크샵 수치가 우리 환경에서도 나오나?" | 높음 | 시뮬레이션 수치임을 먼저 밝히고, Part 3 신뢰성 정의로 연결 |
 | 확장 C `--judge` 에서 Bedrock 모델 접근 오류 | 중간 | `--model` 로 계정에서 쓸 수 있는 Claude 모델 ID 지정. 또는 결정적 지표만 시연 |

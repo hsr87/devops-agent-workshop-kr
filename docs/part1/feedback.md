@@ -42,6 +42,6 @@
 
 | 문제 유형 | 예시 | DevOps Agent의 산출물 | 다음 담당 |
 |---|---|---|---|
-| 코드 결함 | ECS 메모리 누수 | RCA + "운영 조치 없음" + **Agent-ready spec** | 서비스 owner / 코딩 에이전트 |
+| 코드 결함 | ECS 메모리 누수 | RCA + 운영 조치 없음 또는 임시 완화책 + **Agent-ready spec** | 서비스 owner / 코딩 에이전트 |
 | 인프라 설정 | Lambda 타임아웃·메모리 부족 | RCA + **승인형 Mitigation plan** (비용·롤백 포함) | 플랫폼/SRE (승인 후 적용) |
 | 원인 불명 / 외부 요인 | API 5xx (변경 이력 없음) | 변경 가설을 배제한 RCA + 권고 | 판별 컨텍스트 필요 → Part 2 |

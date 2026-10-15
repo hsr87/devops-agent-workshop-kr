@@ -57,7 +57,7 @@ source ~/.ext-workshop.env
 1. **Settings → MCP servers → Add**
 2. Endpoint: `.mcp-endpoint.env` 의 `MCP_URL`
 3. Auth: **API key**, header 이름은 `x-api-key`
-4. Agent Space → **Capabilities** 에서 tool 허용
+4. Agent Space → **기능**(Capabilities) 탭에서 tool 허용
 
 !!! success "Workshop Studio 계정에서는 등록됩니다 (사전 검증에서 확인)"
     일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 등록이 거부됩니다. 하지만 **Workshop Studio 이벤트 계정에서는 등록과 Agent Space 연결이 모두 성공**했습니다. `register.sh` 는 다시 실행해도 안전합니다. 이미 등록돼 있으면 그 서버를 재사용합니다. → [사전 검증 결과](../facilitator/test-report.md)

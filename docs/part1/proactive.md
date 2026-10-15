@@ -11,7 +11,7 @@ CloudWatch 알람, EventBridge 규칙, forwarder Lambda는 **이미 배포되어
 
 ### 1. 웹훅 발급 (콘솔, 2분)
 
-1. [DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → `api-error-incident-space` → **Capabilities** 탭
+1. [DevOps Agent 콘솔](https://console.aws.amazon.com/aidevops/home?region=us-east-1) → `api-error-incident-space` → **기능** 탭 (영어 콘솔: *Capabilities*)
 2. **Webhooks** → **Add Webhook** → **Next** → **Next** → **Generate URL and secret key**
 3. **.csv 파일을 다운로드**하고 *"I've saved and stored my URL and secret key"* 를 체크합니다.
 
