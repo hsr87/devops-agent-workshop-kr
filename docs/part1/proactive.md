@@ -18,39 +18,43 @@ CloudWatch 알람, EventBridge 규칙, forwarder Lambda는 **이미 배포되어
 !!! important "Secret은 이때 한 번만 보입니다"
     .csv 파일을 꼭 받아 두세요. Part 2의 [확장 A](../part2/ext-alert.md)에서도 같은 웹훅을 씁니다.
 
-### 2. 웹훅 값을 환경 파일에 저장 (CloudShell 또는 VS Code 터미널)
+### 2. 웹훅 값을 환경 파일에 저장
 
-.csv 의 값으로 `<URL>`, `<SECRET>` 을 바꿔 실행합니다.
+**방법 A (권장): .csv 파일을 올려서 자동으로 저장**
+
+1. 1번에서 받은 .csv 파일을 올립니다.
+    - **CloudShell:** 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file) → 홈 디렉터리(`~`)에 저장됨
+    - **VS Code IDE:** 왼쪽 탐색기(Explorer)의 `/workshop` 폴더로 끌어다 놓기
+2. 아래를 **그대로** 붙여 넣습니다. 바꿀 값은 없습니다.
 
 ```bash
-sed -i "s#^export WEBHOOK_URL=.*#export WEBHOOK_URL=<URL>#; s#^export WEBHOOK_SECRET=.*#export WEBHOOK_SECRET=<SECRET>#" ~/.ext-workshop.env
-source ~/.ext-workshop.env
-echo "$WEBHOOK_URL"        # https://event-ai.us-east-1.api.aws/webhook/generic/... 가 나오면 OK
+CSV=$(ls ~/webhook-creds-*.csv /workshop/webhook-creds-*.csv 2>/dev/null | head -1); echo "$CSV"
+python3 - "$CSV" <<'EOF'
+import csv, os, re, sys
+cells = [c.strip() for row in csv.reader(open(sys.argv[1], encoding="utf-8-sig")) for c in row]
+url = next(c for c in cells if c.startswith("https://"))
+secret = max((c for c in cells if c != url and " " not in c), key=len)
+p = os.path.expanduser("~/.ext-workshop.env"); s = open(p).read()
+s = re.sub(r"^export WEBHOOK_URL=.*$", "export WEBHOOK_URL=" + url, s, flags=re.M)
+s = re.sub(r"^export WEBHOOK_SECRET=.*$", "export WEBHOOK_SECRET=" + secret, s, flags=re.M)
+open(p, "w").write(s); print("saved")
+EOF
+source ~/.ext-workshop.env && echo "$WEBHOOK_URL"   # https://event-ai.us-east-1.api.aws/webhook/generic/... 가 나오면 OK
+rm "$CSV"                                            # Secret이 담긴 파일이므로 삭제
 ```
 
-??? tip ".csv 파일을 터미널로 올려서 쓰기 (값을 손으로 복사하기 어려울 때)"
-    **파일 올리기**
-
-    - **CloudShell:** 오른쪽 위 **작업**(Actions) → **파일 업로드**(Upload file) → .csv 선택. 홈 디렉터리(`~`)에 올라갑니다.
-    - **VS Code IDE:** 왼쪽 탐색기(Explorer)로 파일을 끌어다 놓습니다. 놓은 폴더에 올라갑니다(예: `/workshop`).
-
-    **값을 환경 파일에 저장** — 위의 `sed` 명령 대신 실행합니다. 파일 경로는 실제 위치로 바꾸세요.
+??? note "방법 B: 값을 직접 붙여 넣기"
+    따옴표 안의 `여기에_붙여넣기` 를 .csv 의 값으로 **바꾼 뒤** 실행합니다.
 
     ```bash
-    python3 - ~/*.csv <<'EOF'
-    import csv, os, re, sys
-    cells = [c.strip() for row in csv.reader(open(sys.argv[1], encoding="utf-8-sig")) for c in row]
-    url = next(c for c in cells if c.startswith("https://"))
-    secret = max((c for c in cells if c != url and " " not in c), key=len)
-    p = os.path.expanduser("~/.ext-workshop.env"); s = open(p).read()
-    s = re.sub(r"^export WEBHOOK_URL=.*$", "export WEBHOOK_URL=" + url, s, flags=re.M)
-    s = re.sub(r"^export WEBHOOK_SECRET=.*$", "export WEBHOOK_SECRET=" + secret, s, flags=re.M)
-    open(p, "w").write(s); print("saved")
-    EOF
+    URL='여기에_붙여넣기'
+    SECRET='여기에_붙여넣기'
+    sed -i "s#^export WEBHOOK_URL=.*#export WEBHOOK_URL=${URL}#; s#^export WEBHOOK_SECRET=.*#export WEBHOOK_SECRET=${SECRET}#" ~/.ext-workshop.env
     source ~/.ext-workshop.env && echo "$WEBHOOK_URL"
     ```
 
-    Secret이 담긴 파일이므로 다 쓴 뒤 지우세요: `rm ~/*.csv`
+!!! warning "`syntax error near unexpected token` 이 나오면"
+    예전 안내의 `<URL>` 같은 자리표시를 그대로 실행해 환경 파일이 깨진 것입니다. 방법 A를 실행하면 해당 줄이 올바른 값으로 덮어써져 해결됩니다.
 
 ### 3. forwarder Lambda에 웹훅 설정
 
