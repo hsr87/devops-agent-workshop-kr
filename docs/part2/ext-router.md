@@ -36,8 +36,16 @@ flowchart LR
 
 DevOps Agent 조사는 **12–25분** 걸립니다(사전 검증 실측). 그래서 `start` 를 먼저 해 두고 기다리는 동안 코드를 읽습니다.
 
+**새 터미널을 열었다면 먼저** (터미널마다 한 번):
+
 ```bash
+# ① Workshop Studio 사이드바 → Get AWS CLI credentials → Mac/Linux 의 export 줄을 먼저 붙여 넣고 Enter
+# ② 실습 값 불러오기 + 자격 증명 확인
 source ~/.ext-workshop.env
+aws sts get-caller-identity --query Arn --output text
+```
+
+```bash
 cd $EXT_REPO/extensions/triage-router
 $EXT_PYTHON router.py start ../alert-forwarder/samples/impressions-drop-during-match.json \
                             ../alert-forwarder/samples/impressions-crash-during-match.json \
