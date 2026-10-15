@@ -6,12 +6,13 @@
 
 ```bash
 pip install git-remote-codecommit
-cd /tmp && rm -rf order-api-reset
-git clone codecommit::us-east-1://order-api order-api-reset
-cp /workshop/lab-1/order-processing/src/app.js order-api-reset/src/app.js
-cp /workshop/lab-1/order-processing/src/validators/orderValidator.js order-api-reset/src/validators/orderValidator.js
-cp /workshop/lab-1/order-processing/package.json order-api-reset/package.json
-cd order-api-reset && git add -A
+cd /workshop                      # IDE 왼쪽 탐색기의 최상위 폴더
+R=/tmp/order-api-reset && rm -rf $R
+git clone codecommit::us-east-1://order-api $R
+cp lab-1/order-processing/src/app.js $R/src/app.js
+cp lab-1/order-processing/src/validators/orderValidator.js $R/src/validators/orderValidator.js
+cp lab-1/order-processing/package.json $R/package.json
+cd $R && git add -A
 git commit -m "Reset to original code for Lab 3 investigation" && git push origin main
 ```
 
@@ -26,19 +27,20 @@ git commit -m "Reset to original code for Lab 3 investigation" && git push origi
     IDE 터미널을 새로 열었다면 먼저 **Get AWS CLI credentials** 의 export 값을 붙여 넣으세요 → [환경 준비](../setup.md)
 
 ```bash
+cd /workshop/lab-3                # 이후 경로는 모두 이 폴더 기준
+
 # 1) Agent Space ID 설정 (IDE에서 bootstrap을 실행하지 않았어도 동작)
 AGENT_SPACE_ID=$(aws devops-agent list-agent-spaces --region us-east-1 \
   --query "agentSpaces[?name=='api-error-incident-space'].agentSpaceId | [0]" --output text)
 # 위 명령이 안 되면: DevOps Agent 콘솔 → api-error-incident-space 에서 ID를 복사해 AGENT_SPACE_ID=<ID>
-sed -i "s/<YOUR_AGENT_SPACE_ID>/${AGENT_SPACE_ID}/" /workshop/lab-3/.env
-grep AGENT_SPACE_ID /workshop/lab-3/.env
+sed -i "s/<YOUR_AGENT_SPACE_ID>/${AGENT_SPACE_ID}/" .env
+grep AGENT_SPACE_ID .env
 
 # 2) 리셋된 코드 clone
-rm -rf /workshop/lab-3/order-processing
-git clone codecommit::us-east-1://order-api /workshop/lab-3/order-processing
+rm -rf order-processing
+git clone codecommit::us-east-1://order-api order-processing
 
 # 3) 대시보드 실행
-cd /workshop/lab-3
 bash open-dashboard.sh     # 출력되는 EC2 URL을 복사 (pager가 뜨면 q)
 python3 server.py
 ```

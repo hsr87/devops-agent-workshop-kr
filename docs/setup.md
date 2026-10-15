@@ -62,7 +62,7 @@
     **② 저장소 받기**
 
     ```bash
-    cd /workshop
+    cd /workshop        # IDE 왼쪽 탐색기(Explorer)의 최상위 폴더
     git clone https://github.com/hsr87/devops-agent-workshop-kr.git ext
     bash ext/scripts/bootstrap.sh
     source ~/.ext-workshop.env
