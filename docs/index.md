@@ -13,7 +13,7 @@ AWS DevOps Agent의 기능을 **직접 써보면서** 우리 조직의 장애 �
 !!! abstract "워크샵 참가 (Join)"
     <img src="assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="180" align="right">
 
-    **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 로 접속하거나 오른쪽 QR 코드를 스캔하세요. Event access code가 링크에 포함되어 있어 바로 참가 화면이 열립니다.
+    **[https://bit.ly/c-devops-workshop](https://bit.ly/c-devops-workshop)** 로 접속하거나 오른쪽 QR 코드를 스캔하세요. Event access code가 링크에 포함되어 있어 바로 참가 화면이 열립니다.
 
     1. **Email one-time-password (OTP)** 로 로그인
     2. 약관 동의 → **Join event**

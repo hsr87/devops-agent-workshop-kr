@@ -6,7 +6,7 @@
 
 <img src="../assets/join-qr.jpeg" alt="워크샵 참가 QR 코드" width="160" align="right">
 
-1. **[https://bit.ly/4hTUWKA](https://bit.ly/4hTUWKA)** 에 접속하거나 오른쪽 QR 코드를 스캔합니다. Event access code가 링크에 들어 있어 따로 입력하지 않아도 됩니다.
+1. **[https://bit.ly/c-devops-workshop](https://bit.ly/c-devops-workshop)** 에 접속하거나 오른쪽 QR 코드를 스캔합니다. Event access code가 링크에 들어 있어 따로 입력하지 않아도 됩니다.
 2. **Email one-time-password (OTP)** 로 로그인합니다.
 3. 약관에 동의하고 **Join event** 를 누릅니다. (access code를 묻는 화면이 나오면 진행자가 화면에 띄운 코드를 입력)
 4. 왼쪽 사이드바에서 **Open AWS console** 과 **VS Code IDE** 를 각각 새 탭으로 엽니다. 명령은 모두 VS Code IDE 터미널에서 실행합니다.
