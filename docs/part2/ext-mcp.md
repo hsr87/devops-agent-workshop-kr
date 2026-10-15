@@ -60,7 +60,7 @@ source ~/.ext-workshop.env
 4. Agent Space → **기능**(Capabilities) 탭에서 tool 허용
 
 !!! success "Workshop Studio 계정에서는 등록됩니다 (사전 검증에서 확인)"
-    일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 등록이 거부됩니다. 하지만 **Workshop Studio 이벤트 계정에서는 등록과 Agent Space 연결이 모두 성공**했습니다. `register.sh` 는 다시 실행해도 안전합니다. 이미 등록돼 있으면 그 서버를 재사용합니다. → [사전 검증 결과](../facilitator/test-report.md)
+    일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed at this time"* 오류로 등록이 거부됩니다. 하지만 **Workshop Studio 이벤트 계정에서는 등록과 Agent Space 연결이 모두 성공**했습니다. `register.sh` 는 다시 실행해도 안전합니다. 이미 등록돼 있으면 그 서버를 재사용합니다.
 
 ### 4) 효과 확인 {#effect}
 
@@ -76,7 +76,7 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" --query '
 
 | 상황 | -26% 알림의 상태 | 결과를 보는 곳 |
 |---|---|---|
-| 최근 광고 조사 없음 (진행자 데모 계정) | 새 조사 | 그 조사의 결론: *"Verdict: **EXPECTED_EVENT — not an incident**"* |
+| 최근 광고 조사 없음  | 새 조사 | 그 조사의 결론: *"Verdict: **EXPECTED_EVENT — not an incident**"* |
 | [메인 에이전트 실습](ext-router.md)을 방금 끝냄 (참가자 계정) | **`LINKED`** → -62% 조사가 재조사 | -62% 조사의 새 요약: *"ad_impressions drop recovering (−62% → −26%)"* |
 
 두 경우 모두 조사 기록에서 `explain_deviation`, `get_metric_baseline`, `get_service_owner` 호출을 확인할 수 있습니다. 이것이 MCP가 연결됐다는 증거입니다. MCP가 없을 때는 같은 알림에 대해 *"event-context MCP tools are not wired into this space"* 를 `investigation_gap` 으로 남기고 판단을 유보했습니다.
@@ -86,7 +86,7 @@ aws devops-agent list-backlog-tasks --agent-space-id "$AGENT_SPACE_ID" --query '
 
     > *"Same service (ads-serving), same metric (ad_impressions), same market (KR) … a continuation of the same ongoing ad_impressions degradation, with the deviation now at -26% vs the earlier -62%."*
 
-    이 장면은 그대로 토론 소재가 됩니다. 알림이 연달아 오면 DevOps Agent는 **새 조사를 만들지 않고 기존 장애의 경과로 해석**합니다. `EXPECTED_EVENT` 결론 화면은 [진행자 데모](../facilitator/index.md)로 보여 줍니다.
+    이 장면은 그대로 토론 소재가 됩니다. 알림이 연달아 오면 DevOps Agent는 **새 조사를 만들지 않고 기존 장애의 경과로 해석**합니다.
 
 ## 운영에 적용할 때
 

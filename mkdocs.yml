@@ -50,11 +50,5 @@ nav:
       - "확장 A · 비즈니스 알림 트리거": part2/ext-alert.md
       - "확장 B · 이벤트 컨텍스트 MCP": part2/ext-mcp.md
       - "확장 C · 정확도 평가": part2/ext-eval.md
-  - "Part 3 · Discovery":
-      - part3/index.md
-      - "템플릿": part3/templates.md
+  - "Part 3 · Discovery": part3/index.md
   - FAQ: faq.md
-  - 진행자 가이드:
-      - facilitator/index.md
-      - "리스크 & 백업": facilitator/risks.md
-      - "사전 검증 결과": facilitator/test-report.md

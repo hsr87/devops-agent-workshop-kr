@@ -161,4 +161,4 @@ python3 ../rca-eval/evaluate.py ground_truth.jsonl results.jsonl
 | `runs/*.json` trace | AgentCore Observability 또는 사내 로그 저장소 |
 
 !!! info "반대 방향(DevOps Agent → 기존 에이전트) 연결"
-    DevOps Agent가 조사 도중 기존 에이전트를 직접 부르게 하려면 기존 에이전트를 **원격 A2A 에이전트**로 등록합니다(`register-service --service remoteagent`). Workshop Studio 계정에서는 계정 정책상 막혀 있지 않습니다. 다만 등록할 때 DevOps Agent가 **실제 A2A 엔드포인트의 에이전트 정보를 조회**하므로, 동작하는 A2A 에이전트가 있어야 합니다. 그래서 이 실습은 **메인 에이전트가 주도권을 갖는 방향**으로 구성했습니다. → [사전 검증 결과](../facilitator/test-report.md)
+    DevOps Agent가 조사 도중 기존 에이전트를 직접 부르게 하려면 기존 에이전트를 **원격 A2A 에이전트**로 등록합니다(`register-service --service remoteagent`). Workshop Studio 계정에서는 계정 정책상 막혀 있지 않습니다. 다만 등록할 때 DevOps Agent가 **실제 A2A 엔드포인트의 에이전트 정보를 조회**하므로, 동작하는 A2A 에이전트가 있어야 합니다. 그래서 이 실습은 **메인 에이전트가 주도권을 갖는 방향**으로 구성했습니다.
