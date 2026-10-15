@@ -8,7 +8,7 @@
 | Lab 3이 엉뚱한 조사를 분석함 | 중간 | Lab 3은 진행 중인 조사를 재사용함. **Lab 3을 먼저 시작**하고 Live Output에 `creating new task` 가 보인 뒤 메인 에이전트 실습 시작 |
 | Lab 3을 다시 실행했더니 PR이 안 만들어짐 | 낮음 | 브랜치 이름이 날짜 기준이라 같은 날 재실행하면 충돌. 첫 실행의 PR을 보여주면 됨 |
 | 메인 에이전트 실습의 조사가 1:50까지 안 끝남 | 중간 | 조사 12–25분. `Ctrl+C` 후 나중에 `router.py finish` 재실행. 토론은 진행자 화면(사전 검증 결과)으로 |
-| 참가자 진도 차이 | 높음 | Lambda 시나리오를 빨리 끝난 사람용 버퍼로 사용. 늦은 사람은 Proactive Method 2 |
+| 참가자 진도 차이 | 높음 | 빨리 끝난 사람은 확장 실습으로. 늦은 사람은 Proactive Method 2 |
 | MCP·A2A 등록이 계정 정책으로 거부됨 | 낮음 (Workshop Studio) | 일부 일반 계정에서는 *"Only external accounts and exempted accounts are allowed"* 로 거부됨. **Workshop Studio 계정에서는 MCP 등록·연결 성공 확인**(사전 검증). A2A는 정책상 허용되지만 실제 A2A 엔드포인트가 필요 |
 | CloudShell 세션 끊김 (20–30분 무입력) | 중간 | 다시 열고 `source ~/.ext-workshop.env`. 홈 디렉터리와 venv는 유지됨. 조사 결과는 `router.py finish` 를 다시 실행하면 이어서 받음 |
 | CloudShell의 AWS CLI가 `devops-agent` 명령을 모름 | 낮음 | 확장 실습 코드는 venv의 boto3를 쓰므로 영향 없음. CLI로 확인하는 단계는 콘솔 Operator access로 대신 확인 |

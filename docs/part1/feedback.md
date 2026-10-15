@@ -1,4 +1,4 @@
-# ③ 피드백 루프 & Lambda (0:58–1:05)
+# ③ 피드백 루프 (0:58–1:05)
 
 ## 미니 실습: RCA 반박하기 (필수, 5분)
 
@@ -19,29 +19,16 @@
 
 !!! question "Q. Self-evolving은 구체적으로 어떻게 동작하나요? regression 우려는 없나요?"
     - 작업 이력과 피드백이 **메모리**에 저장되고, 다음 조사 때 참고됩니다.
-    - 에이전트는 기본적으로 **read-only** 로 조사합니다. 그래서 학습 때문에 운영 환경에 쓰기가 일어나는 일은 없습니다. 인프라 변경은 아래처럼 **사람이 승인**해야 실행됩니다.
+    - 에이전트는 기본적으로 **read-only** 로 조사합니다. 그래서 학습 때문에 운영 환경에 쓰기가 일어나는 일은 없습니다. 인프라 변경은 **사람이 승인**해야 실행됩니다.
     - 다만 "조사 품질"이 나빠지는 regression은 따로 측정해야 합니다 → [확장 C · 정확도 평가](../part2/ext-eval.md)
 
 !!! question "Q. 모델을 고를 수 있나요? 성능과 비용은 누가 최적화하나요?"
     DevOps Agent에서는 구체적인 모델을 고를 수 없고 **Smart / Balanced Tier** 만 선택합니다.
     모델을 직접 고르고 싶은 단계는 Part 2의 **커스텀 에이전트**(Strands 등)에서 모델을 지정하는 식으로 나눠 맡기면 됩니다.
 
-## (선택) Lambda 인프라 설정 문제
-
-참고 (원본 워크샵): [Lab 1 · Lambda Infrastructure Investigation](https://catalog.us-east-1.prod.workshops.aws/workshops/a03aac5c-40f1-44c3-87ef-495507743b8b/en-US/exercises/lab1/lambda-investigation)
-
-빨리 끝난 분을 위한 과제입니다. 진행자는 아래 세 화면만 짧게 보여줍니다.
-
-| 화면 | 의미 |
-|---|---|
-| Mitigation plan의 **5단계**: Prepare → Pre-validate → Apply → Post-validate → Rollback | 변경 전후 검증과 되돌리기 계획까지 포함된 실행 계획 |
-| **비용 영향**: 메모리 128MB → 1024MB, 호출당 비용 약 8배 | 조치의 비용 트레이드오프를 먼저 알려줌 |
-| **사람 승인(Human-in-the-loop)** | 인프라 변경은 승인 전에는 실행되지 않음 |
-
 ## Part 1 정리
 
 | 문제 유형 | 예시 | DevOps Agent의 산출물 | 다음 담당 |
 |---|---|---|---|
 | 코드 결함 | ECS 메모리 누수 | RCA + 운영 조치 없음 또는 임시 완화책 + **Agent-ready spec** | 서비스 owner / 코딩 에이전트 |
-| 인프라 설정 | Lambda 타임아웃·메모리 부족 | RCA + **승인형 Mitigation plan** (비용·롤백 포함) | 플랫폼/SRE (승인 후 적용) |
 | 원인 불명 / 외부 요인 | API 5xx (변경 이력 없음) | 변경 가설을 배제한 RCA + 권고 | 판별 컨텍스트 필요 → Part 2 |

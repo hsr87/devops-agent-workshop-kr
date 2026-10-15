@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 0:15–0:40 | [① ECS 장애 조사](ecs.md): Topology, RCA, Mitigation, Agent-ready spec | Lab 1 · ECS Application Investigation | 필수 |
 | 0:40–0:58 | [② 자동 트리거](proactive.md): Alarm → EventBridge → Lambda → Webhook | Lab 1 · Proactive Investigation | 필수 |
-| 0:58–1:05 | [③ 피드백 루프 & Lambda](feedback.md): RCA 반박해 재조사 요청, 인프라 문제 승인 흐름 | Lab 1 · Lambda Investigation | Lambda는 선택 |
+| 0:58–1:05 | [③ 피드백 루프](feedback.md): RCA 반박해 재조사 요청 | — | 필수 |
 
 !!! info "이번 워크샵에서 건너뛰는 것"
     원본 **Lab 2(Claude Code로 코드 수정)** 는 건너뜁니다. Lab 1의 *Agent-ready spec* 화면으로 "조사 결과가 코드 수정 도구로 넘어가는 지점"만 확인합니다. 원본에도 Lab 3는 Lab 1·2를 건너뛰어도 진행할 수 있다고 되어 있습니다.

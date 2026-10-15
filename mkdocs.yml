@@ -40,7 +40,7 @@ nav:
       - part1/index.md
       - "① ECS 장애 조사": part1/ecs.md
       - "② 자동 트리거 (Proactive)": part1/proactive.md
-      - "③ 피드백 루프 & Lambda": part1/feedback.md
+      - "③ 피드백 루프": part1/feedback.md
   - "Part 2 · 기존 Agent 연결":
       - part2/index.md
       - "멀티에이전트 패턴": part2/architecture.md
